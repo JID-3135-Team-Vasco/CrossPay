@@ -11,17 +11,20 @@ You'll specifically need to follow the instructions under "React Native CLI Quic
 ## Setup
 
 Install dependencies:  
-Ensure your Node version is 16.14.0. Next, run `npm install` in the root folder.
-Navigate to the ios/ folder and run `pod install` to install all necessary iOS dependencies or `bundle install` and then `pod install` if necessary gem dependencies don't exist. Make sure you develop on the `users/<user>` directory on Mac if watchman does not work.
+Ensure your Node version is 16.14.0. Next, run `npm install` in the client folder.
+Navigate to the `client/ios/` folder and run `pod install` to install all necessary iOS dependencies or `bundle install` in `client/` and then `pod install` in `client/ios` if necessary gem dependencies don't exist. Make sure you develop on the `users/<user>` directory on Mac if watchman does not work.
 
-Add `.env` variable to the `server` directory. You will need a username and password that has access to the database cluster:
+Add `.env` file to the `server` directory. You will need a username and password that has access to the database cluster:
 ```
 DATABASE=mongodb+srv://<user>:<password>@crosspaycluster.c9tl0ik.mongodb.net/CrossPay?retryWrites=true&w=majority
 JWT_SECRET=<secret>
 ```
-
-Start the backend server:
-In a terminal window, run `npm start` in the root folder. This will run a local server on port 8000, connecting to MongoDB via Node/Express.
+Start the backend server, run the following commands:
+```
+cd server
+npm start
+```
+This will run a local server on port 8000, connecting to MongoDB via Node/Express.
 
 ## Running the app
 
