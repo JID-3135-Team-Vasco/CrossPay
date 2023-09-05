@@ -31,9 +31,13 @@ This will run a local server on port 8000, connecting to MongoDB via Node/Expres
 Open a new terminal window and run one of the following commands in the TinyQuickstartReactNative/ folder:
 
 To run on iOS, run this command:  
-`npx react-native run-ios` or `npm run ios`
+```
+npx react-native run-ios
+```
 To run on Android, run this command:  
-`npx react-native run-android` or `npm run android`
+```
+npx react-native run-android
+```
 
 Both commands start Metro, build the app, open a simulator/emulator, and launch the app in the simulator/emulator. For iOS, if you encounter an error related to a simulator not being found, you can specify a simulator like so:
 `npx react-native run-ios --simulator="iPhone 14"`
