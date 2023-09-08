@@ -1,6 +1,7 @@
 # CrossPay
 
-## Mobile development environment
+
+# Mobile development environment
 
 You'll need to set up a mobile development environment to run the app on iOS or Android. The steps and features depend on if you have a MacOS or Windows. 
 A MacOS is ideal for development since it allows for both iOS and Android testing.
@@ -39,5 +40,14 @@ To run on Android, run this command:
 npx react-native run-android
 ```
 
+# 
 Both commands start Metro, build the app, open a simulator/emulator, and launch the app in the simulator/emulator. For iOS, if you encounter an error related to a simulator not being found, you can specify a simulator like so:
 `npx react-native run-ios --simulator="iPhone 14"`
+
+
+# Release Notes
+
+## V 0.1.0
+### Features
+### Bug Fixes
+### Known Issues
