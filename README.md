@@ -15,6 +15,7 @@ Install dependencies:
 Ensure your Node version is 16.14.0. Next, run `npm install` in the client folder.
 Navigate to the `client/ios/` folder and run `pod install` to install all necessary iOS dependencies or `bundle install` in `client/` and then `pod install` in `client/ios` if necessary gem dependencies don't exist. Make sure you develop on the `users/<user>` directory on Mac if watchman does not work.
 
+Now, navigate to the server directory and run `npm install` and `npm install -g nodemon`.
 Add `.env` file to the `server` directory. You will need a username and password that has access to the database cluster:
 ```
 DATABASE=mongodb+srv://<user>:<password>@crosspaycluster.c9tl0ik.mongodb.net/CrossPay?retryWrites=true&w=majority
