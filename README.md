@@ -1,5 +1,5 @@
 # CrossPay
-
+CrossPay is a payment application that is designed to consolidate bank account, credit card, and payment information all in one app. Through React Native, both iOS and Android devices are supported, and utilizing the Plaid API allows for transactions to occur. CrossPay simplifies payments into one, easy to access app.
 
 # Mobile development environment
 
@@ -50,5 +50,13 @@ Both commands start Metro, build the app, open a simulator/emulator, and launch 
 
 ## V 0.1.0
 ### Features
+* Created and connected MongoDB for login information.
+* Login Screen is implemented. Users are capable of:
+  * Creating a new account
+  * Logging in with preexisting accounts
+  * Resetting passwords of accounts
 ### Bug Fixes
+* As this is the first version, no bugs were fixed.
 ### Known Issues
+* MongoDB currently has some issues with accessibility on the backend. This will be looked at in the future.
+* Using axiom differs depending on os and is not accounted for. A permanent solution is being looked into.
