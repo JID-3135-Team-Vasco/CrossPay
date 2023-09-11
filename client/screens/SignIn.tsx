@@ -14,7 +14,7 @@ export function SignIn({navigation}): React.ReactElement {
       Alert.alert('All fields are required!');
       return;
     }
-    const resp = await axios.post('http://localhost:8000/api/signin', {
+    const resp = await axios.post('http://10.0.2.2:8000/api/signin', {
       email,
       password,
     });
@@ -54,6 +54,7 @@ export function SignIn({navigation}): React.ReactElement {
           title="Forgot Password?"
           type="clear"
           titleStyle={styles.secondaryButton}
+          onPress={() => navigation.push('ForgotPassword')}
         />
       </View>
     </KeyboardAwareScrollView>

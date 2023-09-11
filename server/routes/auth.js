@@ -2,7 +2,7 @@ import express from "express";
 
 const router = express.Router();
 
-import { signUp, signIn } from "../controllers/auth";
+import { signUp, signIn, forgotPassword, resetPassword } from "../controllers/auth";
 
 router.get("/", (req, res) => {
   return res.json({
@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
 
 router.post("/signup", signUp);
 router.post("/signin", signIn);
-// router.post("/forgot-password", forgotPassword);
-// router.post("/reset-password", resetPassword);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
 export default router;
