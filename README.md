@@ -56,7 +56,7 @@ Both commands start Metro, build the app, open a simulator/emulator, and launch 
 
 # Release Notes
 
-## V 0.1.0
+## Version 0.1.0
 
 ### Features
 
