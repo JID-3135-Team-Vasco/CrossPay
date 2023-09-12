@@ -15,17 +15,17 @@ export function ForgotPasswordEnter({navigation}): React.ReactElement {
         var email = await AsyncStorage.getItem('res-Email');
         if (email != null) {
           email = email.substring(1, email.length - 1);
-        const resp = await axios.post('http://10.0.2.2:8000/api/reset-password', {
-          email, password,
-        });
-        if (resp.data.error) {
-          Alert.alert(resp.data.error);
-          return;
-        } else {
-          Alert.alert("Password Succesfully Changed");
-          navigation.push('SignIn');
-          return;
-        }
+          const resp = await axios.post('http://localhost:8000/api/reset-password', {
+            email, password,
+          });
+          if (resp.data.error) {
+            Alert.alert(resp.data.error);
+            return;
+          } else {
+            Alert.alert("Password Successfully Changed");
+            navigation.push('SignIn');
+            return;
+          }
         }
       }
       Alert.alert("The password entries are not identical.");
@@ -39,11 +39,13 @@ export function ForgotPasswordEnter({navigation}): React.ReactElement {
                 placeholder="Password"
                 onChangeText={setPassword}
                 autoCapitalize="none"
+                secureTextEntry={true}
             />
             <Input
                 placeholder="Confirm Password"
                 onChangeText={setConPassword}
                 autoCapitalize="none"
+                secureTextEntry={true}
             />
             <Button
                 title="Change Password"

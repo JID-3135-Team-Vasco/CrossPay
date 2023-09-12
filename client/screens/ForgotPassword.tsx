@@ -9,14 +9,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export function ForgotPassword({navigation}): React.ReactElement {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    console.log(email);
 
     const checkEmail = async () => {
         if (email === '') {
             Alert.alert('An email is required to change password');
             return;
         }
-        const resp = await axios.post('http://10.0.2.2:8000/api/forgot-password', {
+        const resp = await axios.post('http://localhost:8000/api/forgot-password', {
           email,
         });
         if (resp.data.error) {
@@ -30,7 +29,7 @@ export function ForgotPassword({navigation}): React.ReactElement {
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
           <View style={styles.viewWrapper}>
-            <Text style={styles.title}>CrossPay</Text>
+            <Text style={styles.title}>Please enter your email:</Text>
             <Input
                 placeholder="Email"
                 onChangeText={setEmail}
@@ -40,6 +39,12 @@ export function ForgotPassword({navigation}): React.ReactElement {
                 title="Send"
                 onPress={checkEmail}
                 buttonStyle={styles.mainButton}
+            />
+            <Button
+              title="Back"
+              type="clear"
+              titleStyle={styles.secondaryButton}
+              onPress={() => navigation.push('SignIn')}
             />
           </View>
         </KeyboardAwareScrollView>
@@ -57,7 +62,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     title: {
-      fontSize: 24,
+      fontSize: 20,
     },
     subtitle: {
       fontSize: 14,
