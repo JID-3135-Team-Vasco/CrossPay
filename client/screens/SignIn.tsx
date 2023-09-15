@@ -54,6 +54,7 @@ export function SignIn({navigation}): React.ReactElement {
           title="Forgot Password?"
           type="clear"
           titleStyle={styles.secondaryButton}
+          onPress={() => navigation.push('ForgotPassword')}
         />
       </View>
     </KeyboardAwareScrollView>
