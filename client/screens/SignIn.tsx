@@ -4,6 +4,7 @@ import {Input, Button, Icon} from 'react-native-elements';
 import axios from 'axios';
 import {COLORS} from './Colors';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { Accounts } from './Accounts';
 
 export function SignIn({navigation}): React.ReactElement {
   const [email, setEmail] = useState('');
@@ -22,6 +23,9 @@ export function SignIn({navigation}): React.ReactElement {
       Alert.alert(resp.data.error);
     } else {
       Alert.alert('Login successful!');
+      navigation.navigate(Accounts);
+      
+      
     }
   };
 
