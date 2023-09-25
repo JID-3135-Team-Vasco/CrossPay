@@ -13,6 +13,7 @@ import {ForgotPasswordEnter} from './screens/ForgotPasswordEnter';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
+import { Accounts } from './screens/Accounts';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,14 @@ function App(): JSX.Element {
             component={ForgotPasswordEnter}
             options={() => ({
               title: 'CrossPay',
+              headerBackVisible: false,
+            })}
+          />
+          <Stack.Screen
+            name="Accounts"
+            component={Accounts}
+            options={() => ({
+              title: 'Accounts',
               headerBackVisible: false,
             })}
           />
