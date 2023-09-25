@@ -1,28 +1,28 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, Alert} from 'react-native';
+import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
 import {Input, Button, Icon} from 'react-native-elements';
 import axios from 'axios';
 import {COLORS} from './Colors';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import { Accounts } from './Accounts';
 
-export function SignIn({navigation}): React.ReactElement {
+export function SignIn({navigation}: {navigation: any}): React.ReactElement {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
 
   const onPressSignIn = async () => {
     if (email === '' || password === '') {
       Alert.alert('All fields are required!');
       return;
     }
-    const resp = await axios.post('http://localhost:8000/api/signin', {
+    const resp = await axios.post(`http://${address}:8000/users/signin`, {
       email,
       password,
     });
     if (resp.data.error) {
       Alert.alert(resp.data.error);
     } else {
-      Alert.alert('Login successful!');
       navigation.navigate(Accounts);
       
       

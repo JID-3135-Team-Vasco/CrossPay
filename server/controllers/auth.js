@@ -104,7 +104,7 @@ export const forgotPassword = async (req, res) => {
   if (!user) {
     return res.json({ error: "User not found" });
   }
-  return res.json({ok: true});
+  return res.json({ ok: true });
   // // generate code
   // const resetCode = "11111";
   // // save to db

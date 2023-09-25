@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, Alert} from 'react-native';
+import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
 import {Input, Button, Icon} from 'react-native-elements';
 import axios from 'axios';
 import {COLORS} from './Colors';
@@ -9,13 +9,14 @@ export function SignUp({navigation}): React.ReactElement {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
 
   const onPressSignUp = async () => {
     if (name === '' || email === '' || password === '') {
       Alert.alert('All fields are required!');
       return;
     }
-    const resp = await axios.post('http://localhost:8000/api/signup', {
+    const resp = await axios.post(`http://${address}:8000/users/signin`, {
       name,
       email,
       password,
