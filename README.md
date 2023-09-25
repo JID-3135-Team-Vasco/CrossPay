@@ -43,7 +43,7 @@ To run on iOS, run this command:
 npx react-native run-ios
 ```
 
-To run on Android, you need to change all instances of `localhost` to `10.0.2.2`. Then run this command:
+To run on Android, run this command:
 
 ```
 npx react-native run-android
