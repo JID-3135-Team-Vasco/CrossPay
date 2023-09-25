@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {StyleSheet, Text, View, Alert} from 'react-native';
+import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
 import {Input, Button, Icon} from 'react-native-elements';
 import axios from 'axios';
 import {COLORS} from './Colors';
@@ -9,13 +9,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export function ForgotPasswordEnter({navigation}): React.ReactElement {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConPassword] = useState('');
+    const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
 
     const onPressConfirmPass = async () => {
       if (password.localeCompare(confirmPassword) === 0) {
         var email = await AsyncStorage.getItem('res-Email');
         if (email != null) {
           email = email.substring(1, email.length - 1);
-          const resp = await axios.post('http://localhost:8000/api/reset-password', {
+          const resp = await axios.post(`http://${address}:8000/users/reset-password`, {
             email, password,
           });
           if (resp.data.error) {

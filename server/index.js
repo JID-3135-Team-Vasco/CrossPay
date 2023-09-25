@@ -1,9 +1,12 @@
 import dotenv from "dotenv";
 import express from "express";
+import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
+import session from "express-session";
 
 import authRoutes from "./routes/auth";
+import plaidRoutes from "./routes/plaid";
 
 import morgan from "morgan";
 
@@ -21,6 +24,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan("dev"));
 
-app.use("/api", authRoutes);
+app.use(
+  // FOR DEMO PURPOSES ONLY
+  // Use an actual secret key in production
+  session({ secret: "bosco", saveUninitialized: true, resave: true })
+);
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use("/users", authRoutes);
+app.use("/api", plaidRoutes);
 
 app.listen(8000, () => console.log("Server running on port 8000"));
