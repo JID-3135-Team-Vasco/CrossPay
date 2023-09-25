@@ -22,6 +22,11 @@ Add `.env` file to the `server` directory. You will need a username and password
 ```
 DATABASE=mongodb+srv://<user>:<password>@crosspaycluster.c9tl0ik.mongodb.net/CrossPay?retryWrites=true&w=majority
 JWT_SECRET=<secret>
+PLAID_CLIENT_ID=<client-id>
+PLAID_SECRET=<sandbox-secret>
+PLAID_ENV=sandbox
+PLAID_SANDBOX_REDIRECT_URI=https://cdn-testing.plaid.com/link/v2/stable/sandbox-oauth-a2a-react-native-redirect.html
+PLAID_ANDROID_PACKAGE_NAME=com.crosspay
 ```
 
 Start the backend server, run the following commands:
