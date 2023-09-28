@@ -23,9 +23,7 @@ export function SignIn({navigation}: {navigation: any}): React.ReactElement {
     if (resp.data.error) {
       Alert.alert(resp.data.error);
     } else {
-      navigation.navigate(Accounts);
-      
-      
+      navigation.navigate('Accounts', { email });
     }
   };
 

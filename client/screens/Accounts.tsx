@@ -10,14 +10,17 @@ import {
 import {COLORS} from './Colors';
 import {PlaidLink, LinkExit, LinkSuccess} from 'react-native-plaid-link-sdk';
 import FooterList from '../components/FooterList';
+import axios from 'axios';
 
 
-export function Accounts({navigation}: any): React.ReactElement {
+
+export function Accounts({route, navigation}: {route: any, navigation: any}): React.ReactElement {
   const [linkToken, setLinkToken] = useState('');
   const [success, setSuccess] = useState(false);
   const [accounts, setAccounts] = useState(null);
   const [refresh, setRefresh] = useState(false);
   const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
+  const { email } = route.params;
 
   const createLinkToken = useCallback(async () => {
     await fetch(`http://${address}:8000/api/create_link_token`, {
@@ -38,6 +41,7 @@ export function Accounts({navigation}: any): React.ReactElement {
 
   // Fetch account data
   const getAccounts = useCallback(async () => {
+    let finalAccounts;
     await fetch(`http://${address}:8000/api/balance`, {
       method: 'POST',
       headers: {
@@ -46,7 +50,7 @@ export function Accounts({navigation}: any): React.ReactElement {
     })
       .then(response => response.json())
       .then(data => {
-        let finalAccounts = accounts;
+        finalAccounts = accounts;
         let newAccounts = data.accounts.accounts;
         newAccounts.forEach((account: any) => {
           return finalAccounts.push(account);
@@ -56,6 +60,11 @@ export function Accounts({navigation}: any): React.ReactElement {
       })
       .catch(err => {
         console.log(err);
+      });
+      // Save account data to user in database
+      await axios.put(`http://${address}:8000/users`, {
+        email: email, 
+        accounts: finalAccounts,
       });
   }, [setAccounts]);
 
