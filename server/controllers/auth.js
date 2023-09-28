@@ -89,6 +89,7 @@ export const signIn = async (req, res) => {
       token,
       user,
     });
+    console.log(res.user);
   } catch (err) {
     console.log(err);
     return res.status(400).send("Error. Try again.");

@@ -16,7 +16,7 @@ export function SignUp({navigation}): React.ReactElement {
       Alert.alert('All fields are required!');
       return;
     }
-    const resp = await axios.post(`http://${address}:8000/users/signin`, {
+    const resp = await axios.post(`http://${address}:8000/users/signup`, {
       name,
       email,
       password,
