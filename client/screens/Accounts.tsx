@@ -13,9 +13,9 @@ import FooterList from '../components/FooterList';
 
 
 export function Accounts({navigation}: any): React.ReactElement {
-  const [linkToken, setLinkToken] = useState(null);
+  const [linkToken, setLinkToken] = useState('');
   const [success, setSuccess] = useState(false);
-  const [accounts, setAccounts] = useState([]);
+  const [accounts, setAccounts] = useState(null);
   const [refresh, setRefresh] = useState(false);
   const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
 
@@ -57,7 +57,7 @@ export function Accounts({navigation}: any): React.ReactElement {
       .catch(err => {
         console.log(err);
       });
-  });
+  }, [setAccounts]);
 
   useEffect(() => {
     if (accounts == null && success) {
@@ -112,7 +112,7 @@ export function Accounts({navigation}: any): React.ReactElement {
             <Text style={styles.buttonText}>Add Account</Text>
           </View>
         </PlaidLink>
-      <FooterList />
+      <FooterList/>
     </SafeAreaView>
   );
 };

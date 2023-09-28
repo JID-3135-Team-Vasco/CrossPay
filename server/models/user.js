@@ -20,6 +20,10 @@ const userSchema = new Schema(
       min: 6,
       max: 20,
     },
+    accounts: {
+      type: Array,
+      required: false,
+    },
     resetCode: "",
   },
   { timestamps: true }
