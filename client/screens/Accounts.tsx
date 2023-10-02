@@ -15,9 +15,8 @@ import axios from 'axios';
 
 
 export function Accounts({route, navigation}: {route: any, navigation: any}): React.ReactElement {
-  const [linkToken, setLinkToken] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [accounts, setAccounts] = useState(null);
+  const [linkToken, setLinkToken] = useState(null);
+  const [accounts, setAccounts] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
   const { email } = route.params;
@@ -40,7 +39,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
   }, [setLinkToken]);
 
   // Fetch account data
-  const getAccounts = useCallback(async () => {
+  const addNewAccounts = useCallback(async () => {
     let finalAccounts;
     await fetch(`http://${address}:8000/api/balance`, {
       method: 'POST',
@@ -53,27 +52,41 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
         finalAccounts = accounts;
         let newAccounts = data.accounts.accounts;
         newAccounts.forEach((account: any) => {
-          return finalAccounts.push(account);
+          finalAccounts.push(account);
         });
-        setAccounts(finalAccounts);
-        setRefresh(!refresh);
       })
       .catch(err => {
         console.log(err);
       });
-      // Save account data to user in database
-      await axios.put(`http://${address}:8000/users`, {
-        email: email, 
-        accounts: finalAccounts,
+      console.log(finalAccounts);
+      await axios.post(`http://${address}:8000/accounts/add-accounts`, {
+          email: email, 
+          accounts: finalAccounts,
       });
-  }, [setAccounts]);
+      getAccounts();
+      
+  }, [email]);
+
+  const getAccounts = async () => {
+    console.log("getting accounts");
+    await axios
+    .get(`http://${address}:8000/accounts/get-accounts`, {
+        params: { email: email },
+    })
+    .then(function (response) {
+        let userAccounts = response.data.accounts
+        console.log(userAccounts);
+        setAccounts(userAccounts);
+        setRefresh(true);
+    })
+    .catch(function (error) {
+        console.error(error);
+    });
+  };
 
   useEffect(() => {
-    if (accounts == null && success) {
-      getAccounts();
-      console.log(accounts)
-    }
-  }, [accounts]);
+    getAccounts();
+  },[])
 
   useEffect(() => {
     if (linkToken == null) {
@@ -111,8 +124,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
             }).catch(err => {
               console.log(err);
             });
-            setSuccess(true);
-            getAccounts();
+            addNewAccounts();
           }}
           onExit={(response: LinkExit) => {
             console.log(response);
@@ -184,7 +196,7 @@ const styles = StyleSheet.create({
     },
     flatListItemText: {
       fontSize: 15,
-      color: '#00000',
+      color: '#000000',
       fontWeight: 'bold',
       alignSelf: 'center',
     },
