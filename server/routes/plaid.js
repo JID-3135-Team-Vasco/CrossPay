@@ -29,7 +29,7 @@ router.post("/create_link_token", async (req, res, next) => {
       user: { client_user_id: req.sessionID },
       client_name: "CrossPay",
       language: "en",
-      products: ["auth"],
+      products: ["transactions"],
       country_codes: ["US"],
       redirect_uri: process.env.PLAID_SANDBOX_REDIRECT_URI,
     };
@@ -39,7 +39,7 @@ router.post("/create_link_token", async (req, res, next) => {
       user: { client_user_id: req.sessionID },
       client_name: "CrossPay",
       language: "en",
-      products: ["auth"],
+      products: ["transactions"],
       country_codes: ["US"],
       android_package_name: process.env.PLAID_ANDROID_PACKAGE_NAME,
     };
