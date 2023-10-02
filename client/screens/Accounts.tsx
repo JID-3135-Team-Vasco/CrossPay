@@ -62,9 +62,14 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
       await axios.post(`http://${address}:8000/accounts/add-accounts`, {
           email: email, 
           accounts: finalAccounts,
-      });
-      getAccounts();
-      
+      })
+      .then(function (response) {
+        console.log(response.data);
+        getAccounts();
+    })
+    .catch(function (error) {
+        console.error(error);
+    });
   }, [email]);
 
   const getAccounts = async () => {
