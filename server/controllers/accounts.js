@@ -11,7 +11,9 @@ export const getAccounts = async (req, res) => {
     if (!user) {
       return res.json({ error: "Email or reset code is invalid" });
     }
-
+    if (!user.accounts) {
+      return res.json({ accounts: [] });
+    }
     return res.json({ accounts: user.accounts });
   } catch (err) {
     console.log(err);
