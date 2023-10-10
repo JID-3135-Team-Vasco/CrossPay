@@ -5,10 +5,10 @@ import FooterItem from './FooterItem'
 const FooterList = () => {
     return (
         <View style={styles.container}>
-            <FooterItem text="Accounts" name="home" />
-            <FooterItem text="Payments" name="plus-square" />
-            <FooterItem text="Transfers" name="list-ol" />
-            <FooterItem text="Settings" name="user" />
+            <FooterItem text="Accounts" name="university" />
+            <FooterItem text="Payments" name="money-bill" />
+            <FooterItem text="Transfers" name="exchange-alt" />
+            <FooterItem text="Profile" name="user" />
         </View>
     )
 }
