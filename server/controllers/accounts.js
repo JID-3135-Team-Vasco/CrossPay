@@ -20,6 +20,8 @@ export const getAccounts = async (req, res) => {
   }
 };
 
+//Potentially add notifications when accounts added
+
 export const addAccounts = async (req, res) => {
   try {
     const { email, accounts } = req.body;
