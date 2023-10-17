@@ -10,6 +10,8 @@ A MacOS is ideal for development since it allows for both iOS and Android testin
 Follow the environment setup instructions found in the official React Native docs: https://reactnative.dev/docs/environment-setup. This would including installing XCode (for iOS only), Android Studio, Ruby (for iOS only)...etc.
 You'll specifically need to follow the instructions under "React Native CLI Quickstart". Select your "Development OS" and follow the installation instructions for both iOS and Android (under "Target OS").
 
+For Android ensure enviroment variables and Android SDK is setup properly.
+
 ## Setup
 
 Install dependencies:  
