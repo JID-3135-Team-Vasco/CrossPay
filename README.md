@@ -5,9 +5,9 @@ CrossPay is a payment application that is designed to consolidate bank account, 
 # Mobile development environment
 
 You'll need to set up a mobile development environment to run the app on iOS or Android. The steps and features depend on if you have a MacOS or Windows.
-A MacOS is ideal for development since it allows for both iOS and Android testing.
+A MacOS is ideal for development since it allows for both iOS and Android testing, however Windows is ideal for Android development.
 
-Follow the environment setup instructions found in the official React Native docs: https://reactnative.dev/docs/environment-setup. This would including installing XCode (for iOS only), Android Studio, Ruby (for iOS only)...etc.
+Follow the environment setup instructions found in the official React Native docs: https://reactnative.dev/docs/environment-setup. This would including installing XCode (for iOS only), Ruby (for iOS only), Android Studio...etc.
 You'll specifically need to follow the instructions under "React Native CLI Quickstart". Select your "Development OS" and follow the installation instructions for both iOS and Android (under "Target OS").
 
 For Android ensure enviroment variables and Android SDK is setup properly.
@@ -84,6 +84,7 @@ Both commands start Metro, build the app, open a simulator/emulator, and launch 
 
 - Icons for the footer don't currently show up on iOS
 - Log out functionality is yet to be implemented
+- Plaid SDK Plugin requires different versions for iOS and Android. Requires package changing until a solution is found.
 
 ## Version 0.1.0
 
