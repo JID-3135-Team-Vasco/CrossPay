@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export function ForgotPasswordEnter({navigation}): React.ReactElement {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConPassword] = useState('');
+    // Currently necessary because of iOS and Android differences in emulators.
+    // Fixed a previous issue with axios posts.
     const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
 
     const onPressConfirmPass = async () => {
@@ -20,6 +22,7 @@ export function ForgotPasswordEnter({navigation}): React.ReactElement {
             email, password,
           });
           if (resp.data.error) {
+            Alert.alert("Error: Email was not accepted. Please try again.");
             Alert.alert(resp.data.error);
             return;
           } else {
