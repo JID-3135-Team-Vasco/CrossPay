@@ -100,8 +100,9 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
     }
   }, [linkToken]);
 
-  const handlePressAccount = () => {
-    console.log("pressed");
+  const handlePressAccount = (item: any) => {
+    console.log(item.name);
+    navigation.navigate('AccountInfo', {item})
   };
 
   type ItemProps = {
@@ -121,7 +122,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
   const renderItem = ({item}) => (
     <Account 
       name={item.name} 
-      onPress={handlePressAccount}
+      onPress={()=>{handlePressAccount(item)}}
     />
   );
 
