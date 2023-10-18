@@ -14,6 +14,7 @@ import {ForgotPasswordEnter} from './screens/ForgotPasswordEnter';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import { Accounts } from './screens/Accounts';
+import {AccountInfo} from './screens/AccountInfo';
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +60,14 @@ function App(): JSX.Element {
             options={() => ({
               title: 'Accounts',
               headerBackVisible: false,
+            })}
+          />
+          <Stack.Screen
+            name="AccountInfo"
+            component={AccountInfo}
+            options={() => ({
+              title: 'Account Info',
+              headerBackVisible: true,
             })}
           />
         </Stack.Navigator>
