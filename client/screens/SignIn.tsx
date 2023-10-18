@@ -87,6 +87,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   secondaryButton: {
-    color: COLORS.primary,
+    color: COLORS.tertiary,
   },
 });

@@ -14,5 +14,6 @@ router.post("/signup", signUp);
 router.post("/signin", signIn);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
+//Add notifs
 
 export default router;

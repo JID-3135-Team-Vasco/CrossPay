@@ -6029,6 +6029,9 @@
     "react-native-iphone-x-helper" "^1.0.3"
 
 "react-native-plaid-link-sdk@^10.4.0", "react-native-plaid-link-sdk@^10.6.4":
+
+"react-native-plaid-link-sdk@^10.4.0", "react-native-plaid-link-sdk@^10.6.4":
+
   "integrity" "sha512-+mVYSQgxaE4FcUGj/+9g0pDlQRGV4uMpmFf/J0hoFbrtKqUFHL+ADBNsvJ6lOGzr1aFw7R6t06BbzXsHYmcFOQ=="
   "resolved" "https://registry.npmjs.org/react-native-plaid-link-sdk/-/react-native-plaid-link-sdk-10.6.4.tgz"
   "version" "10.6.4"
