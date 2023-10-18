@@ -11,6 +11,7 @@ import {COLORS} from './Colors';
 import {PlaidLink, LinkExit, LinkSuccess} from 'react-native-plaid-link-sdk';
 import FooterList from '../components/FooterList';
 import axios from 'axios';
+import { TouchableOpacity } from 'react-native';
 
 
 
@@ -99,18 +100,36 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
     }
   }, [linkToken]);
 
-  type ItemProps = {name: string};
-  const Account = ({name}: ItemProps) => (
-    <View style={styles.flatListItem}>
-      <Text style={styles.flatListItemText}>{name}</Text>
-    </View>
+  const handlePressAccount = () => {
+    console.log("pressed");
+  };
+
+  type ItemProps = {
+    name: string;
+    onPress: ()=> void;
+  };
+
+  const Account = ({name, onPress}: ItemProps) => (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.flatListItem}>
+        <Text style={styles.flatListItemText}>{name}</Text>
+      </View>
+    </TouchableOpacity>
+    
+  );
+
+  const renderItem = ({item}) => (
+    <Account 
+      name={item.name} 
+      onPress={handlePressAccount}
+    />
   );
 
   return (
     <SafeAreaView style={styles.flatListContainer}>
         <FlatList
           data={accounts}
-          renderItem={({item}) => <Account name={item.name} />}
+          renderItem={renderItem}
           keyExtractor={item => item.account_id}
           extraData={refresh}
         />
@@ -194,7 +213,7 @@ const styles = StyleSheet.create({
       width: '100%',
     },
     flatListItem: {
-      backgroundColor: COLORS.secondary,
+      backgroundColor: COLORS.lightGreen,
       padding: 20,
       marginVertical: 15,
       marginHorizontal: 16,
