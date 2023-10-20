@@ -10,6 +10,7 @@ export function SignIn({navigation}: {navigation: any}): React.ReactElement {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
+  const input = React.createRef();
 
   const onPressSignIn = async () => {
     if (email === '' || password === '') {

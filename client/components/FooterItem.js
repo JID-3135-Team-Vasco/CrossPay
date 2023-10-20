@@ -2,9 +2,9 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from 'react'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
-const FooterItem = ({ name, text }) => {
+const FooterItem = ({ name, text, func }) => {
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={func}>
             <>
                 <FontAwesome5 name={name} size={25} style={styles.fontStyle} />
                 <Text style={styles.iconText}>{text}</Text>
