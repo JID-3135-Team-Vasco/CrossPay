@@ -101,8 +101,8 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
   }, [linkToken]);
 
   const handlePressAccount = (item: any) => {
-    console.log(item.name);
-    navigation.navigate('AccountInfo', {item})
+    console.log(item.balances)
+    navigation.navigate('AccountInfo', {item}, accounts);
   };
 
   type ItemProps = {
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
       marginHorizontal: 16,
     },
     flatListItemText: {
-      fontSize: 15,
+      fontSize: 20,
       color: '#000000',
       fontWeight: 'bold',
       alignSelf: 'center',
