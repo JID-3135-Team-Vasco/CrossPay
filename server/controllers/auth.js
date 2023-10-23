@@ -47,9 +47,9 @@ export const signUp = async (req, res) => {
       });
       // console.log(user);
       const { password, ...rest } = user._doc;
-      return res.json({
-        token,
+      res.json({
         user: rest,
+        token: token,
       });
     } catch (err) {
       console.log(err);
@@ -84,10 +84,9 @@ export const signIn = async (req, res) => {
       expiresIn: "7d",
     });
     user.password = undefined;
-    user.secret = undefined;
     res.json({
-      token,
-      user,
+      user: user,
+      token: token,
     });
     console.log(res.user);
   } catch (err) {

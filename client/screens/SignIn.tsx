@@ -1,16 +1,17 @@
-import React, {useState} from 'react';
+import React, {useState, useContext } from 'react';
 import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
 import {Input, Button, Icon} from 'react-native-elements';
 import axios from 'axios';
 import {COLORS} from './Colors';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import { Accounts } from './Accounts';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from '../context/auth';
 
 export function SignIn({navigation}: {navigation: any}): React.ReactElement {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [state, setState] = useContext(AuthContext); 
   const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
-  const input = React.createRef();
 
   const onPressSignIn = async () => {
     if (email === '' || password === '') {
@@ -24,7 +25,9 @@ export function SignIn({navigation}: {navigation: any}): React.ReactElement {
     if (resp.data.error) {
       Alert.alert(resp.data.error);
     } else {
-      navigation.navigate('Accounts', { email });
+      setState(resp.data);
+      await AsyncStorage.setItem("auth-rn", JSON.stringify(resp.data));
+      navigation.push('Accounts');
     }
   };
 
@@ -88,6 +91,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   secondaryButton: {
-    color: COLORS.tertiary,
+    color: COLORS.primary,
   },
 });

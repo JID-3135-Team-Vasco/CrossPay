@@ -5,16 +5,20 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
     const [state, setState] = useState({
-        email: "test",
+        user: null,
+        token: "",
     });
 
     useEffect(() => {
         const loadFromAsyncStorage = async () => {
-            let data = await AsyncStorage.getItem("res-Email");
-            const parsed = JSON.parse(data);
-            setState({...state, email: parsed.email});
+            let data = await AsyncStorage.getItem("auth-rn");
+            if (data) {
+                const parsed = JSON.parse(data);
+                setState({...state, user: parsed.user, token: parsed.token });
+            }
         };
         loadFromAsyncStorage();
+        console.log(state)
     }, []);
 
     return (

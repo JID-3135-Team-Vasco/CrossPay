@@ -1,17 +1,22 @@
-import React, {useState} from 'react';
+import React, { useContext, useEffect} from 'react';
 import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
 import {Input, Button, Icon} from 'react-native-elements';
-import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {COLORS} from './Colors';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { AuthContext } from '../context/auth';
 
 export function Profile({route, navigation}: {route: any, navigation: any}): React.ReactElement {
 
-  const logOut = function () {
-    // I don't know what info is stored / needs to be stored.
-    // I can do it, I just need to ask in the future.
-    navigation.navigate('SignIn');
-  }
+  const [state, setState] = useContext(AuthContext);
+
+  const logOut = async () => {
+    // // I don't know what info is stored / needs to be stored.
+    // // I can do it, I just need to ask in the future.
+    // navigation.push('SignIn');
+    setState({token: "", user: null});
+    await AsyncStorage.removeItem("auth-rn");
+  };
   
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.container}>

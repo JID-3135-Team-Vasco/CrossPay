@@ -4,12 +4,12 @@ export const getAccounts = async (req, res) => {
   try {
     console.log("i am here");
     const { email } = req.query;
-    console.log(email);
-    // find user based on email and resetCode
+    // find user based on email
     const user = await User.findOne({ email });
     // if user not found
+    console.log(user);
     if (!user) {
-      return res.json({ error: "Email or reset code is invalid" });
+      return res.json({ error: "Email is invalid" });
     }
     if (!user.accounts) {
       return res.json({ accounts: [] });

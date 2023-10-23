@@ -3577,6 +3577,11 @@
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
 
+"fsevents@^2.3.2":
+  "integrity" "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw=="
+  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
+  "version" "2.3.3"
+
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
   "resolved" "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
@@ -6028,15 +6033,10 @@
     "prop-types" "^15.6.2"
     "react-native-iphone-x-helper" "^1.0.3"
 
-"react-native-plaid-link-sdk@^10.4.0", "react-native-plaid-link-sdk@^10.6.4":
-
-"react-native-plaid-link-sdk@^10.4.0", "react-native-plaid-link-sdk@^10.6.4":
-
-  "integrity" "sha512-+mVYSQgxaE4FcUGj/+9g0pDlQRGV4uMpmFf/J0hoFbrtKqUFHL+ADBNsvJ6lOGzr1aFw7R6t06BbzXsHYmcFOQ=="
-  "resolved" "https://registry.npmjs.org/react-native-plaid-link-sdk/-/react-native-plaid-link-sdk-10.6.4.tgz"
-  "version" "10.6.4"
-  dependencies:
-    "react-native-plaid-link-sdk" "^10.4.0"
+"react-native-plaid-link-sdk@^8.0.0":
+  "integrity" "sha512-feKnqx3PY738LwqmiGRhJ1Dxn2tDdEOScS3CLemfNvM94jylHCkOZSmFn5SwP/IcB5pVgqlR/pnbhTQT3cPgSA=="
+  "resolved" "https://registry.npmjs.org/react-native-plaid-link-sdk/-/react-native-plaid-link-sdk-8.0.1.tgz"
+  "version" "8.0.1"
 
 "react-native-ratings@8.0.4":
   "integrity" "sha512-Xczu5lskIIRD6BEdz9A0jDRpEck/SFxRqiglkXi0u67yAtI1/pcJC76P4MukCbT8K4BPVl+42w83YqXBoBRl7A=="
@@ -6081,7 +6081,7 @@
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.72 || 1000.0.0", "react-native@>=0.42.0", "react-native@>=0.48.4", "react-native@>=0.57", "react-native@>=0.66.0", "react-native@0.72.4":
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.72 || 1000.0.0", "react-native@>=0.42.0", "react-native@>=0.48.4", "react-native@>=0.57", "react-native@>=0.61", "react-native@0.72.4":
   "integrity" "sha512-+vrObi0wZR+NeqL09KihAAdVlQ9IdplwznJWtYrjnQ4UbCW6rkzZJebRsugwUneSOKNFaHFEo1uKU89HsgtYBg=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.72.4.tgz"
   "version" "0.72.4"

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useContext, useCallback} from 'react';
 import {
   Platform,
   SafeAreaView,
@@ -12,15 +12,17 @@ import {PlaidLink, LinkExit, LinkSuccess} from 'react-native-plaid-link-sdk';
 import FooterList from '../components/FooterList';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native';
+import { AuthContext } from '../context/auth';
 
 
 
-export function Accounts({route, navigation}: {route: any, navigation: any}): React.ReactElement {
+export function Accounts({navigation}: {navigation: any}): React.ReactElement {
   const [linkToken, setLinkToken] = useState(null);
   const [accounts, setAccounts] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
-  const { email } = route.params;
+  const [userEmail, setUserEmail] = useState("");
+  const [state, setState] = useContext(AuthContext);
 
   const createLinkToken = useCallback(async () => {
     await fetch(`http://${address}:8000/api/create_link_token`, {
@@ -61,7 +63,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
       });
       console.log(finalAccounts);
       await axios.post(`http://${address}:8000/accounts/add-accounts`, {
-          email: email, 
+          email: userEmail, 
           accounts: finalAccounts,
       })
       .then(function (response) {
@@ -71,19 +73,22 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
     .catch(function (error) {
         console.error(error);
     });
-  }, [email]);
+  }, [userEmail]);
 
   const getAccounts = async () => {
-    console.log("getting accounts");
+    console.log(state);
+    const { email } = state.user;
+    console.log(email);
     await axios
     .get(`http://${address}:8000/accounts/get-accounts`, {
         params: { email: email },
     })
     .then(function (response) {
-        let userAccounts = response.data.accounts
+        console.log(response);
+        let userAccounts = response.data.accounts;
         console.log(userAccounts);
+        setUserEmail(email);
         setAccounts(userAccounts);
-        setRefresh(true);
     })
     .catch(function (error) {
         console.error(error);
