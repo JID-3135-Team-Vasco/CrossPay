@@ -3,10 +3,10 @@ import express from "express";
 const router = express.Router();
 
 import {
-  addAccounts, getAccounts
+  updateAccounts, getAccounts
 } from "../controllers/accounts";
 
-router.post("/add-accounts", addAccounts);
+router.post("/update-accounts", updateAccounts);
 router.get("/get-accounts", getAccounts);
 
 export default router;

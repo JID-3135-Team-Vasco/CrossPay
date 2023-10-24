@@ -17,13 +17,13 @@ import {NavigationContainer} from '@react-navigation/native';
 import { Accounts } from './screens/Accounts';
 import {AccountInfo} from './screens/AccountInfo';
 import FooterList from './components/FooterList';
-import {navigationRef} from './components/RootNavigation';
+import { Payments } from './screens/Payments';
 
 const Stack = createNativeStackNavigator();
 
 function App(): JSX.Element {
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer>
         <Stack.Navigator initialRouteName="SignIn">
           <Stack.Screen
             name="SignUp"
@@ -69,19 +69,24 @@ function App(): JSX.Element {
             name="AccountInfo"
             component={AccountInfo}
             options={() => ({
-              title: 'Account Info',
-              headerBackVisible: true,
+              title: 'Account Information',
+              headerBackVisible: false,
             })}
           />
-          
-          <Stack.Screen name="Footer" component={FooterList}/>
-
+          <Stack.Screen
+            name="Payments"
+            component={Payments}
+            options={() => ({
+              title: 'Payments',
+              headerBackVisible: false,
+            })}
+          />
           <Stack.Screen
             name="Profile"
             component={Profile}
             options={() => ({
               title: 'Profile',
-              headerBackVisible: true,
+              headerBackVisible: false,
             })}
           />
         </Stack.Navigator>

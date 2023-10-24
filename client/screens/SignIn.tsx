@@ -24,7 +24,7 @@ export function SignIn({navigation}: {navigation: any}): React.ReactElement {
     if (resp.data.error) {
       Alert.alert(resp.data.error);
     } else {
-      navigation.navigate('Accounts', { email });
+      navigation.push('Accounts', { email });
     }
   };
 
@@ -88,6 +88,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   secondaryButton: {
-    color: COLORS.tertiary,
+    color: COLORS.primary,
   },
 });
