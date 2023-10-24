@@ -16,7 +16,6 @@ For Android ensure enviroment variables and Android SDK is setup properly.
 
 Install dependencies:  
 Ensure your Node version is 16.20.1. Next, run `npm install` in the client folder.
-Navigate to the `client/ios/` folder and run `pod install` to install all necessary iOS dependencies or `bundle install` in `client/` and then `pod install` in `client/ios` if necessary gem dependencies don't exist. Make sure you develop on the `users/<user>` directory on Mac if watchman does not work.
 
 Now, navigate to the server directory and run `npm install` and `npm install -g nodemon`.
 Add `.env` file to the `server` directory. You will need a username and password that has access to the database cluster:
@@ -31,6 +30,10 @@ PLAID_SANDBOX_REDIRECT_URI=https://cdn-testing.plaid.com/link/v2/stable/sandbox-
 PLAID_ANDROID_PACKAGE_NAME=com.crosspay
 ```
 
+### iOS Setup
+
+First, change the `react-native-plaid-link-sdk` version to `"^8.0.0"`. Navigate to the `client/ios/` folder and run `pod install` to install all necessary iOS dependencies or `bundle install` in `client/` and then `pod install` in `client/ios` if necessary gem dependencies don't exist. Update the pods repo or the Plaid package if necessary. Make sure you develop on the `users/<user>` directory on Mac if watchman does not work.
+
 Start the backend server, run the following commands:
 
 ```
@@ -42,7 +45,7 @@ This will run a local server on port 8000, connecting to MongoDB via Node/Expres
 
 ## Running the app
 
-Open a new terminal window and run one of the following commands in the TinyQuickstartReactNative/ folder:
+Open a new terminal window and run one of the following commands in the CrossPay/client folder:
 
 To run on iOS, run this command:
 

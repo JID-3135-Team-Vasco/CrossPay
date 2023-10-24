@@ -60,7 +60,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
         console.log(err);
       });
       console.log(finalAccounts);
-      await axios.post(`http://${address}:8000/accounts/add-accounts`, {
+      await axios.post(`http://${address}:8000/accounts/update-accounts`, {
           email: email, 
           accounts: finalAccounts,
       })
@@ -101,8 +101,8 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
   }, [linkToken]);
 
   const handlePressAccount = (item: any) => {
-    console.log(item.balances)
-    navigation.navigate('AccountInfo', {item}, accounts);
+    console.log(email)
+    navigation.push('AccountInfo', {item: item, email: email, accounts: accounts});
   };
 
   type ItemProps = {
@@ -158,7 +158,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
             <Text style={styles.buttonText}>Add Account</Text>
           </View>
         </PlaidLink>
-      <FooterList/>
+      <FooterList email={email} accounts={accounts} />
     </SafeAreaView>
   );
 };
