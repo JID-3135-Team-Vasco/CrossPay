@@ -70,23 +70,20 @@ Both commands start Metro, build the app, open a simulator/emulator, and launch 
 
 ### Features
 
-- Created Account screen and first iteration of footer
-- Integrated [Plaid Link](https://plaid.com/docs/link/) to securely add the following accounts:  
-  - Checking
-  - Savings
-  - Credit Card
-- Connected Plaid accounts added to MongoDB, allowing users to save their account details to their user profile
+- Created Account Information screen
+- Routed footer with proper routing with required parameters like user accounts and email
+- Created Payment screen with validation check on amount/input
+- Implemented log out functionality
 
 ### Bug Fixes
 
-- Fixed the axios discrepancies with iOS and Android
-- Fixed MongoDB accessibility issues in the backend
-- Allowed a way to return home from the forgot password page
+- Fixed the icon issues with iOS and Android
+- Fixed Android Plaid Link issues for most machines
 
 ### Known Issues
 
-- Icons for the footer don't currently show up on iOS
-- Log out functionality is yet to be implemented
+- Android only works with `plaid-link-sdk` version of `10.6.4` and iOS only works with `8.0.0` 
+- Plaid SDK is still not supported on certain Windows/Android setups
 - Plaid SDK Plugin requires different versions for iOS and Android. Requires package changing until a solution is found.
 
 ## Version 0.2.0
@@ -110,7 +107,6 @@ Both commands start Metro, build the app, open a simulator/emulator, and launch 
 
 - Icons for the footer don't currently show up on iOS
 - Log out functionality is yet to be implemented
-- Plaid SDK Plugin requires different versions for iOS and Android. Requires package changing until a solution is found.
 
 ## Version 0.1.0
 
