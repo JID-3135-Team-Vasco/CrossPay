@@ -84,7 +84,8 @@ Both commands start Metro, build the app, open a simulator/emulator, and launch 
 
 - Android only works with `plaid-link-sdk` version of `10.6.4` and iOS only works with `8.0.0` 
 - Plaid SDK is still not supported on certain Windows/Android setups
-- Plaid SDK Plugin requires different versions for iOS and Android. Requires package changing until a solution is found.
+- Duplicate accounts can be added
+- Accounts wiped upon initial log in sometimes
 
 ## Version 0.2.0
 
