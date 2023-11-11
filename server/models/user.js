@@ -24,7 +24,9 @@ const userSchema = new Schema(
       type: Array,
       required: false,
     },
-    resetCode: "",
+    access_token: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

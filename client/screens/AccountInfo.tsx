@@ -20,11 +20,8 @@ export function AccountInfo({route, navigation}: {route: any, navigation: any}):
   const deleteAccount = async () => {
     let i:number = 0;
     for (let i = 0; i < accounts.length; i++) {
-      console.log(accounts[i]);
-      console.log(item);
       if (accounts[i] === item) {
         accounts.splice(i, 1);
-        console.log(accounts);
         break;
       }
     }
@@ -33,7 +30,6 @@ export function AccountInfo({route, navigation}: {route: any, navigation: any}):
       accounts: accounts,
     })
     .then(function (response) {
-      console.log(response.data);
       navigation.push('Accounts', {email});
     });
   }
@@ -58,7 +54,6 @@ export function AccountInfo({route, navigation}: {route: any, navigation: any}):
       accounts: accounts,
     })
     .then(function (response) {
-      console.log(response.data);
       navigation.push('Accounts', {email});
     });
     navigation.push('Accounts', {email});
