@@ -17,6 +17,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import { Accounts } from './screens/Accounts';
 import {AccountInfo} from './screens/AccountInfo';
 import FooterList from './components/FooterList';
+import { Transfers } from './screens/Transfers';
 import { Payments } from './screens/Payments';
 
 const Stack = createNativeStackNavigator();
@@ -78,6 +79,14 @@ function App(): JSX.Element {
             component={Payments}
             options={() => ({
               title: 'Payments',
+              headerBackVisible: false,
+            })}
+          />
+          <Stack.Screen
+            name="Transfers"
+            component={Transfers}
+            options={() => ({
+              title: 'Transfers',
               headerBackVisible: false,
             })}
           />

@@ -8,6 +8,8 @@ import session from "express-session";
 import authRoutes from "./routes/auth";
 import plaidRoutes from "./routes/plaid";
 import accountRoutes from "./routes/accounts";
+import transferRoutes from "./routes/transfers";
+import paymentRoutes from "./routes/payments";
 
 import morgan from "morgan";
 
@@ -37,5 +39,7 @@ app.use(bodyParser.json());
 app.use("/users", authRoutes);
 app.use("/api", plaidRoutes);
 app.use("/accounts", accountRoutes);
+app.use("/transfers", transferRoutes);
+app.use("/payments", paymentRoutes);
 
 app.listen(8000, () => console.log("Server running on port 8000"));

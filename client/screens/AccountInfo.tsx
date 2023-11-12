@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, SafeAreaView, Text, StyleSheet } from 'react-native';
 import {COLORS} from './Colors';
 import {Input, Button, Icon} from 'react-native-elements';
@@ -14,8 +14,45 @@ export function AccountInfo({route, navigation}: {route: any, navigation: any}):
 
   const [visible, setVisible] = useState(false);
   const [nickname, setNickname] = useState(name);
-  const balance = type === "credit" ? route.params.item.balances['current'] : route.params.item.balances['available'];
+  let balance = type === "credit" ? item.balances['current'] : item.balances['available'];
   const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
+
+  useEffect(() => {
+    getBalance();
+  },[])
+
+  const getBalance = async () => {
+    let balances = item.balances;
+    await fetch(`http://${address}:8000/api/balances`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({access_token: item.access_token}),
+      })
+      .then(response => response.json())
+      .then(data => {
+        balances = data.balances;
+      })
+    console.log(balances);
+    console.log(item.balances);
+    if (balances['current'] === item.balances['current'] && balances['available'] === item.balances['available']) {
+      console.log('no update');
+      return;
+    }
+    accounts.forEach((account: any) => {
+      if (account === item) {
+        account.balances = balances;
+        return;
+      }
+    });
+    item.balances = balances;
+    balance = type === "credit" ? item.balances['current'] : item.balances['available'];
+    await axios.post(`http://${address}:8000/accounts/update-accounts`, {
+      email: email, 
+      accounts: accounts,
+    })
+  }
   
   const deleteAccount = async () => {
     let i:number = 0;

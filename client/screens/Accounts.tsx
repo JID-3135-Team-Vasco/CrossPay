@@ -44,7 +44,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
   const addNewAccounts = async (account_institution_id: string) => {
     console.log(account_institution_id);
     let finalAccounts = accounts;
-    await fetch(`http://${address}:8000/api/balance`, {
+    await fetch(`http://${address}:8000/api/account-data`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

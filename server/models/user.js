@@ -24,6 +24,14 @@ const userSchema = new Schema(
       type: Array,
       required: false,
     },
+    transfers: {
+      type: Array,
+      required: false,
+    },
+    payments: {
+      type: Array,
+      required: false,
+    },
     access_token: {
       type: String,
     },
