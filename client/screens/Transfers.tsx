@@ -7,21 +7,17 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
 import CurrencyInput from 'react-native-currency-input';
 
-export function Payments({route, navigation}: {route: any, navigation: any}): React.ReactElement {
+export function Transfers({route, navigation}: {route: any, navigation: any}): React.ReactElement {
 
   const { email, accounts } = route.params;  
   const [linkToken, setLinkToken] = useState(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [typeOpen, setTypeOpen] = useState(false);
-  const [accountNumber, setAccountNumber] = useState('');
-  const [routingNumber, setRoutingNumber] = useState('');
-  const [accountTypes, setAccountTypes] = useState([
-    {label: 'Checking', value: 'checking', labelStyle: styles.labelText}, 
-    {label: 'Savings', value: 'savings', labelStyle: styles.labelText}
-  ]);
-  const [accountType, setAccountType] = useState(null);
+  const [destOpen, setDestOpen] = useState(false);
+  const [destValue, setDestValue] = useState(null);
   const [items, setItems] = useState([{label: '', value: null as string | null, labelStyle: {}}]);
+  const [destItems, setDestItems] = useState([{label: '', value: null as string | null, labelStyle: {}}]);
+  const [password, setPassword] = useState('');
   const [amount, setAmount] = useState(0.00 as number | null);
   const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
 
@@ -31,20 +27,12 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       Alert.alert('Please choose a valid source account!');
       return;
     }
-    if (!accountType) {
-      Alert.alert('Please choose a valid account type!');
+    if (!destValue) {
+      Alert.alert('Please choose a valid destination account!');
       return;
     }
     if (!amount || amount <= 0) {
       Alert.alert('Please enter a nonzero amount!');
-      return;
-    }
-    if (!accountNumber || accountNumber.length < 4 || accountNumber.length > 17) {
-      Alert.alert('Please enter a valid account number of 4-17 numbers!');
-      return;
-    }
-    if (!routingNumber || routingNumber.length != 9) {
-      Alert.alert('Please enter a valid routing number of 9 numbers!');
       return;
     }
     const access_token = value.split('?cross?')[0];
@@ -56,42 +44,11 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       Alert.alert('You only have $' + valueString + ' in this account!');
       return;
     } 
-    let dest_access_token = "";
-    let dest_account_id = "";
 
-    await fetch(`http://${address}:8000/api/payment/authorize`, {
-      method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({account_number: accountNumber, routing_number: routingNumber, account_type: accountType}),
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        if (data.error && data.error.indexOf("account_number") != -1) {
-          Alert.alert('Please enter a valid account number of 4-17 numbers!');
-          return;
-        } else if (data.error && data.error.indexOf("routing_number") != -1) {
-          Alert.alert('Please enter a valid routing number of 9 numbers!');
-          return;
-        } else if (data.error) {
-          Alert.alert(data.error);
-          return;
-        }
-        dest_access_token = data.access_token;
-        dest_account_id = data.account_id;
-      })
-      .catch(err => {
-        console.log(err);
-        return;
-      });
-    
-    if (!dest_access_token || dest_access_token.length == 0 || !dest_account_id || dest_account_id.length == 0) {
-      return;
-    }
+    const dest_access_token = destValue.split('?cross?')[0];
+    const dest_account_id = destValue.split('?cross?')[1];
 
-    let payment: any[] = [];
+    let transfer: any[] = [];
 
     await fetch(`http://${address}:8000/api/transfer/ledger`, {
       method: 'POST',
@@ -103,7 +60,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        payment.push(data.transfer);
+        transfer.push(data.transfer);
       })
       .catch(err => {
         console.log(err);
@@ -121,19 +78,19 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        payment.push(data.transfer);
-        settlementDate = payment[1].expected_settlement_date;
+        transfer.push(data.transfer);
+        settlementDate = transfer[1].expected_settlement_date;
       })
       .catch(err => {
         console.log(err);
         Alert.alert('There was an error with your transfer!');
       });
     
-    await axios.post(`http://${address}:8000/payments/update-payments`, {
+    await axios.post(`http://${address}:8000/transfers/update-transfers`, {
       email: email, 
-      payment: payment,
+      transfer: transfer,
     }) 
-    Alert.alert('Your payment is successful!\nIt should be settled by ' + new Date(settlementDate).toLocaleDateString());
+    Alert.alert('Your transfer is successful!\nIt should be settled by ' + new Date(settlementDate).toLocaleDateString());
     navigation.push('Accounts', {email});
   };
   
@@ -144,6 +101,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       dropdownItems.push({label: account.name, value: (account.access_token + "?cross?" + account.account_id + "?cross?" + balance) as string | null, labelStyle: styles.labelText})
     })
     setItems(dropdownItems);
+    setDestItems(dropdownItems);
   }
 
   useEffect(() => {
@@ -161,6 +119,9 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
             setOpen={setOpen}
             setValue={setValue}
             setItems={setItems}
+            onSelectItem={(selectedItem) => {
+              setDestItems(items.filter(item => item !== selectedItem))
+            }}
             theme="LIGHT"
             placeholder="Select an account"
             style={styles.dropdown}
@@ -178,28 +139,20 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
             placeholder='$10.00'
           />
           <Text style={styles.subtitle}>Destination Account: </Text>
-          <Input
-            placeholder="Account Number"
-            onChangeText={setAccountNumber}
-            autoCapitalize="none"
-          />
-          <Input
-            placeholder="Routing Number"
-            onChangeText={setRoutingNumber}
-          />
           <DropDownPicker
-            open={typeOpen}
-            value={accountType}
-            items={accountTypes}
-            setOpen={setTypeOpen}
-            setValue={setAccountType}
-            setItems={setAccountTypes}
+            open={destOpen}
+            value={destValue}
+            items={destItems}
+            disabled={value == null || destItems.length == items.length}
+            setOpen={setDestOpen}
+            setValue={setDestValue}
+            setItems={setDestItems}
             theme="LIGHT"
-            placeholder="Account Type"
+            placeholder="Select an account"
             style={styles.destDropdown}
           />
           <Button
-            title="Pay"
+            title="Transfer"
             onPress={onPressConfirm}
             buttonStyle={styles.mainButton}
           />
@@ -226,7 +179,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
     destDropdown: {
       alignSelf: 'center',
       marginTop: 10,
-      marginBottom: 20,
+      marginBottom: 60,
       width: 200,
     },
     content: {
@@ -236,10 +189,6 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
     subtitle: {
       fontSize: 20,
       marginTop: 20,
-      padding: 10,
-    },
-    minorTitle: {
-      fontSize: 15,
       padding: 10,
     },
     labelText: {
