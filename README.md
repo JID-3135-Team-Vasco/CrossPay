@@ -66,6 +66,26 @@ Both commands start Metro, build the app, open a simulator/emulator, and launch 
 
 # Release Notes
 
+## Version 0.4.0
+
+### Features
+
+- Completed Payments screens
+- Created Transfers screen
+- Enabled fully functioning payments from adding Plaid accounts to arbitrary account/routing number via Plaid's Transfer API (within Sandbox environment)
+- Enabled fully functioning transfers between adding Plaid accounts via Plaid's Transfer API (within Sandbox environment)
+
+### Bug Fixes
+
+- Prevent adding of duplicate accounts
+- Fixed bug where accounts are wiped upon logging in initially
+- Fixed Android Plaid Link issues for certain Windows machines
+
+### Known Issues
+
+- Plaid SDK is still not supported on certain Windows/Android setups
+- Async storage is not setup, so user state is not remembered upon closing the app
+
 ## Version 0.3.0
 
 ### Features
