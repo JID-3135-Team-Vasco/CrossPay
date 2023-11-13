@@ -28,7 +28,6 @@ PLAID_SECRET=<sandbox-secret>
 PLAID_ENV=sandbox
 PLAID_SANDBOX_REDIRECT_URI=https://cdn-testing.plaid.com/link/v2/stable/sandbox-oauth-a2a-react-native-redirect.html
 PLAID_ANDROID_PACKAGE_NAME=com.crosspay
-SENDGRID_API_KEY='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'
 ```
 
 ### iOS Setup
