@@ -24,7 +24,17 @@ const userSchema = new Schema(
       type: Array,
       required: false,
     },
-    resetCode: "",
+    transfers: {
+      type: Array,
+      required: false,
+    },
+    payments: {
+      type: Array,
+      required: false,
+    },
+    access_token: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

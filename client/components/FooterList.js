@@ -17,7 +17,7 @@ const FooterList = (props) => {
         <View style={styles.container}>
             <FooterItem text="Accounts" name="university" func={() => navigation.push('Accounts', {email})} />
             <FooterItem text="Payments" name="money-bill" func={() => navigation.push('Payments', {email, accounts})}/>
-            <FooterItem text="Transfers" name="exchange-alt" func={() => navigation.push('Profile')}/>
+            <FooterItem text="Transfers" name="exchange-alt" func={() => navigation.push('Transfers', {email, accounts})}/>
             <FooterItem text="Profile" name="user" func={() => navigation.push('Profile', {email, accounts})}/>
         </View>
     )

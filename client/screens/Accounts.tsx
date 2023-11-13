@@ -6,6 +6,7 @@ import {
   View,
   Text,
   StyleSheet,
+  Alert
 } from 'react-native';
 import {COLORS} from './Colors';
 import {PlaidLink, LinkExit, LinkSuccess} from 'react-native-plaid-link-sdk';
@@ -28,7 +29,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({address: address}),
+      body: JSON.stringify({address: address, email: email}),
     })
       .then(response => response.json())
       .then(data => {
@@ -40,38 +41,46 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
   }, [setLinkToken]);
 
   // Fetch account data
-  const addNewAccounts = useCallback(async () => {
-    let finalAccounts;
-    await fetch(`http://${address}:8000/api/balance`, {
+  const addNewAccounts = async (account_institution_id: string) => {
+    console.log(account_institution_id);
+    let finalAccounts = accounts;
+    await fetch(`http://${address}:8000/api/account-data`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-    })
+      body: JSON.stringify({institution_id: account_institution_id}),
+      })
       .then(response => response.json())
       .then(data => {
-        finalAccounts = accounts;
-        let newAccounts = data.accounts.accounts;
+        let newAccounts = data.accounts;
+        let duplicate = false;
         newAccounts.forEach((account: any) => {
-          finalAccounts.push(account);
+          finalAccounts.forEach((finalAccount: any) => {
+            if (finalAccount.account_id === account.account_id) {
+              console.log("duplicate")
+              console.log(account);
+              Alert.alert(account.name + ' is already added to CrossPay');
+              duplicate = true;
+              return;
+            }
+          })
+          if (!duplicate) {
+            console.log(finalAccounts);
+            console.log(account);
+            finalAccounts.push(account);
+          }
         });
       })
       .catch(err => {
         console.log(err);
       });
-      console.log(finalAccounts);
       await axios.post(`http://${address}:8000/accounts/update-accounts`, {
           email: email, 
           accounts: finalAccounts,
       })
-      .then(function (response) {
-        console.log(response.data);
-        getAccounts();
-    })
-    .catch(function (error) {
-        console.error(error);
-    });
-  }, [email]);
+      await getAccounts();
+  };
 
   const getAccounts = async () => {
     console.log("getting accounts");
@@ -81,7 +90,6 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
     })
     .then(function (response) {
         let userAccounts = response.data.accounts
-        console.log(userAccounts);
         setAccounts(userAccounts);
         setRefresh(true);
     })
@@ -101,7 +109,6 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
   }, [linkToken]);
 
   const handlePressAccount = (item: any) => {
-    console.log(email)
     navigation.push('AccountInfo', {item: item, email: email, accounts: accounts});
   };
 
@@ -140,17 +147,31 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
             noLoadingState: false,
           }}
           onSuccess={async (success: LinkSuccess) => {
-            await fetch(`http://${address}:8000/api/exchange_public_token`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({public_token: success.publicToken}),
-            }).catch(err => {
-              console.log(err);
-            });
-            addNewAccounts();
-          }}
+            let duplicate = false;
+            console.log(success);
+            accounts.forEach((account: any) => {
+              if (account.institution_id === success.metadata.institution.id 
+                && account.name === success.metadata.accounts[0].name && account.mask === success.metadata.accounts[0].mask) {
+                console.log("duplicate")
+                console.log(account);
+                duplicate = true;
+                Alert.alert(account.name + ' is already added to CrossPay');
+                return;
+              }
+            })
+            if (!duplicate) {
+              await fetch(`http://${address}:8000/api/exchange_public_token`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({public_token: success.publicToken, email: email}),
+              }).catch(err => {
+                console.log(err);
+              });
+                addNewAccounts(success.metadata.institution.id);
+              }}
+            }
           onExit={(response: LinkExit) => {
             console.log(response);
           }}>

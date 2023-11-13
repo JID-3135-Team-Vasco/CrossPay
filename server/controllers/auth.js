@@ -61,6 +61,7 @@ export const signUp = async (req, res) => {
         name,
         email,
         password: hashedPassword,
+        access_token: "",
       }).save();
       // create signed token
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {

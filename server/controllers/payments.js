@@ -1,6 +1,6 @@
 import User from "../models/user";
 
-export const getAccounts = async (req, res) => {
+export const getPayments = async (req, res) => {
   try {
     const { email } = req.query;
     console.log(email);
@@ -10,20 +10,18 @@ export const getAccounts = async (req, res) => {
     if (!user) {
       return res.json({ error: "Email or reset code is invalid" });
     }
-    if (!user.accounts) {
+    if (!user.payments) {
       return res.json({ accounts: [] });
     }
-    return res.json({ accounts: user.accounts });
+    return res.json({ payments: user.payments });
   } catch (err) {
     console.log(err);
   }
 };
 
-//Potentially add notifications when accounts added
-
-export const updateAccounts = async (req, res) => {
+export const updatePayments = async (req, res) => {
   try {
-    const { email, accounts } = req.body;
+    const { email, payment } = req.body;
     console.log(email);
     // find user based on email and resetCode
     const user = await User.findOne({ email });
@@ -31,7 +29,14 @@ export const updateAccounts = async (req, res) => {
     if (!user) {
       return res.json({ error: "Email or reset code is invalid" });
     }
-    user.accounts = accounts;
+    let userPayments = [];
+    if (user.payments && user.payments.length > 0) {
+      userPayments = user.payments;
+      userPayments.push(payment);
+    } else {
+      userPayments.push(payment);
+    }
+    user.payments = userPayments;
     user.save();
     return res.json({ ok: true });
   } catch (err) {
