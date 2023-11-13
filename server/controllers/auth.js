@@ -7,6 +7,27 @@ import nanoid from "nanoid";
 // const sgMail = require("@sendgrid/mail");
 // sgMail.setApiKey(process.env.SENDGRID_KEY);
 
+//Notify user test
+function sendEmail(dstEmail) {
+  const sgMail = require('@sendgrid/mail')
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+  const msg = {
+    to: dstEmail,
+    from: 'jasonjiang09@gmail.com',
+    subject: 'CrossPay Notification',
+    text: 'New notification test',
+    html: '<strong>Testing Strong HTML Text</strong>',
+  }
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log('Email sent')
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+}
+
 export const signUp = async (req, res) => {
   console.log("Signup Hit");
   try {
@@ -55,6 +76,10 @@ export const signUp = async (req, res) => {
     } catch (err) {
       console.log(err);
     }
+
+    //Notifying successful sign up
+    sendEmail(email)
+
   } catch (err) {
     console.log(err);
   }
