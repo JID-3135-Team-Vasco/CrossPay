@@ -50,7 +50,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({institution_id: account_institution_id}),
-      })
+    })
       .then(response => response.json())
       .then(data => {
         let newAccounts = data.accounts;
@@ -80,6 +80,10 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
           accounts: finalAccounts,
       })
       await getAccounts();
+      await axios.post(`http://${address}:8000/accounts/send-account-notif`, {
+          email: email, 
+          accounts: finalAccounts,
+      })
   };
 
   const getAccounts = async () => {
