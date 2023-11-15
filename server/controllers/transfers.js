@@ -38,6 +38,29 @@ export const updateTransfers = async (req, res) => {
     }
     user.transfers = userTransfers;
     user.save();
+
+    //send email notif to recipient of transfer
+    const sgMail = require('@sendgrid/mail')
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+    console.log("Sending notif to email: ", email);
+
+    const msg = {
+      to: email,
+      from: 'jasonjiang09@gmail.com',
+      subject: 'CrossPay Transfer Recieved!',
+      text: 'Money Received!',
+      html: '<div style="font-family: inherit; text-align: inherit">Money Received!</div>'
+    }
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log('Email sent')
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+
     return res.json({ ok: true });
   } catch (err) {
     console.log(err);
