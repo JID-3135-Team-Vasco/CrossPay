@@ -234,7 +234,6 @@ router.post("/transfer/destination", async (req, res, next) => {
     transferAuthorizationCreateResponse.data.authorization.decision ===
     "declined"
   ) {
-    //FIXME: Error getting transfer declined
     return res.json({
       error: transferAuthorizationCreateResponse.decision_rationale.description,
     });
