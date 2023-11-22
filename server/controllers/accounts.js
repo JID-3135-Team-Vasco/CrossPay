@@ -1,4 +1,6 @@
 import User from "../models/user";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const getAccounts = async (req, res) => {
   try {
@@ -20,36 +22,35 @@ export const getAccounts = async (req, res) => {
 };
 
 //Email notifications when accounts are added
-export const sendAccountNotif = async(req, res) => {
+export const sendAccountNotif = async (req, res) => {
   try {
-    const sgMail = require('@sendgrid/mail')
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    const sgMail = require("@sendgrid/mail");
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
     const { email, accounts } = req.body;
     console.log("Sending notif to email: ", email);
-    console.log("Sending notif for following accounts: ", accounts)
-    
+    console.log("Sending notif for following accounts: ", accounts);
 
     const msg = {
       to: email,
-      from: 'jasonjiang09@gmail.com',
-      subject: 'CrossPay Updated Account',
-      text: 'Congrats on registering a new bank account on CrossPay!',
-      html: '<div style="font-family: inherit; text-align: inherit">Hello CrossPay User!</div><div style="font-family: inherit; text-align: inherit"><br></div><div style="font-family: inherit; text-align: inherit">You have registered a new Bank account on the app! Feel free to make a transfer or payment!</div><div style="font-family: inherit; text-align: inherit"><br></div><div style="font-family: inherit; text-align: inherit">Congrats!</div>'
-    }
+      from: "jasonjiang09@gmail.com",
+      subject: "CrossPay Updated Account",
+      text: "Congrats on registering a new bank account on CrossPay!",
+      html: '<div style="font-family: inherit; text-align: inherit">Hello CrossPay User!</div><div style="font-family: inherit; text-align: inherit"><br></div><div style="font-family: inherit; text-align: inherit">You have registered a new Bank account on the app! Feel free to make a transfer or payment!</div><div style="font-family: inherit; text-align: inherit"><br></div><div style="font-family: inherit; text-align: inherit">Congrats!</div>',
+    };
     sgMail
       .send(msg)
       .then(() => {
-        console.log('Email sent')
+        console.log("Email sent");
       })
       .catch((error) => {
-        console.error(error)
-      })
+        console.error(error);
+      });
     return res.json({ ok: true });
   } catch (err) {
     console.log(err);
-  } 
-}
+  }
+};
 
 export const updateAccounts = async (req, res) => {
   try {

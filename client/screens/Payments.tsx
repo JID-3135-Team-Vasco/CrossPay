@@ -50,14 +50,26 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
     const access_token = value.split('?cross?')[0];
     const account_id = value.split('?cross?')[1];
     const balance = value.split('?cross?')[2];
+    const account_name = value.split('?cross?')[3];
+
+    let payment = {
+      source_account: account_name,
+      source_account_id: account_id,
+      source_access_token: access_token,
+      amount: amount,
+      time: '',
+      dest_account_number: accountNumber,
+      dest_routing_number: routingNumber,
+      dest_account_id: '',
+      dest_access_token: '',
+      ledger_transfer_id: '',
+      destination_transfer_id: ''
+    };
 
     if (balance < amount) {
-      let valueString = JSON.stringify(value)
-      Alert.alert('You only have $' + valueString + ' in this account!');
+      Alert.alert('You only have $' + balance + ' in this account!');
       return;
-    } 
-    let dest_access_token = "";
-    let dest_account_id = "";
+    }
 
     await fetch(`http://${address}:8000/api/payment/authorize`, {
       method: 'POST',
@@ -79,19 +91,17 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
           Alert.alert(data.error);
           return;
         }
-        dest_access_token = data.access_token;
-        dest_account_id = data.account_id;
+        payment.dest_access_token = data.access_token;
+        payment.dest_account_id = data.account_id;
       })
       .catch(err => {
         console.log(err);
         return;
       });
     
-    if (!dest_access_token || dest_access_token.length == 0 || !dest_account_id || dest_account_id.length == 0) {
+    if (!payment.dest_access_token || payment.dest_access_token.length == 0 || !payment.dest_account_id || payment.dest_account_id.length == 0) {
       return;
     }
-
-    let payment: any[] = [];
 
     await fetch(`http://${address}:8000/api/transfer/ledger`, {
       method: 'POST',
@@ -103,7 +113,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        payment.push(data.transfer);
+        payment.ledger_transfer_id = data.transfer.id;;
       })
       .catch(err => {
         console.log(err);
@@ -116,13 +126,14 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({access_token: dest_access_token, account_id: dest_account_id, amount: amount?.toFixed(2), email: email}),
+        body: JSON.stringify({access_token: payment.dest_access_token, account_id: payment.dest_account_id, amount: amount?.toFixed(2), email: email}),
       })
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        payment.push(data.transfer);
-        settlementDate = payment[1].expected_settlement_date;
+        payment.time = data.transfer.created;
+        payment.destination_transfer_id = data.transfer.id
+        settlementDate = data.transfer.expected_settlement_date;
       })
       .catch(err => {
         console.log(err);
@@ -141,7 +152,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
     let dropdownItems: { label: string; value: string | null; labelStyle: {}}[] = []
     accounts.forEach((account: any) => {
       let balance = account.type === "credit" ? account.balances['current'] : account.balances['available']
-      dropdownItems.push({label: account.name, value: (account.access_token + "?cross?" + account.account_id + "?cross?" + balance) as string | null, labelStyle: styles.labelText})
+      dropdownItems.push({label: account.name, value: (account.access_token + "?cross?" + account.account_id + "?cross?" + balance + "?cross?" + account.name) as string | null, labelStyle: styles.labelText})
     })
     setItems(dropdownItems);
   }
@@ -210,49 +221,49 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
   };
 
   const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    mainButton: {
-      width: 200,
-      textAlign: 'center',
-      backgroundColor: COLORS.primary,
-    },
-    dropdown: {
-      alignSelf: 'center',
-      marginTop: 10,
-      width: 200,
-    },
-    destDropdown: {
-      alignSelf: 'center',
-      marginTop: 10,
-      marginBottom: 20,
-      width: 200,
-    },
-    content: {
-      flex: 1,
-      alignItems: 'center'
-    },
-    subtitle: {
-      fontSize: 20,
-      marginTop: 20,
-      padding: 10,
-    },
-    minorTitle: {
-      fontSize: 15,
-      padding: 10,
-    },
-    labelText: {
-      fontSize: 14,
-      padding: 10,
-      color: 'black',
-    },
-    input: {
-      height: 60,
-      margin: 12,
-      width: 200,
-      fontSize: 14,
-      borderWidth: 1,
-      padding: 10,
-    },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff', // Set a background color
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+  },
+  mainButton: {
+    width: 200,
+    alignSelf: 'center',
+    marginTop: 20,
+    backgroundColor: COLORS.primary,
+  },
+  dropdownContainer: {
+    width: 200,
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  dropdown: {
+    backgroundColor: '#fafafa',
+  },
+  destDropdown: {
+    marginTop: 10,
+    marginBottom: 20,
+    width: 200,
+    alignSelf: 'center',
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  subtitle: {
+    fontSize: 18,
+    marginTop: 20,
+    marginBottom: 10,
+    alignSelf: 'center',
+  },
+  input: {
+    height: 40,
+    marginVertical: 5,
+    width: 200,
+    fontSize: 14,
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+  },
 });

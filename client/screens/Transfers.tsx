@@ -38,17 +38,28 @@ export function Transfers({route, navigation}: {route: any, navigation: any}): R
     const access_token = value.split('?cross?')[0];
     const account_id = value.split('?cross?')[1];
     const balance = value.split('?cross?')[2];
-
+    const account_name = value.split('?cross?')[3];
     if (balance < amount) {
-      let valueString = JSON.stringify(value)
-      Alert.alert('You only have $' + valueString + ' in this account!');
+      Alert.alert('You only have $' + balance + ' in this account!');
       return;
     } 
 
     const dest_access_token = destValue.split('?cross?')[0];
     const dest_account_id = destValue.split('?cross?')[1];
-
-    let transfer: any[] = [];
+    const dest_account_name = destValue.split('?cross?')[3];
+    
+    let transfer = {
+      source_account: account_name,
+      source_account_id: account_id,
+      source_access_token: access_token,
+      amount: amount,
+      time: '',
+      dest_account: dest_account_name,
+      dest_account_id: dest_account_id,
+      dest_access_token: dest_access_token,
+      ledger_transfer_id: '',
+      destination_transfer_id: ''
+    };
 
     await fetch(`http://${address}:8000/api/transfer/ledger`, {
       method: 'POST',
@@ -60,7 +71,7 @@ export function Transfers({route, navigation}: {route: any, navigation: any}): R
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        transfer.push(data.transfer);
+        transfer.ledger_transfer_id = data.transfer.id;
       })
       .catch(err => {
         console.log(err);
@@ -78,8 +89,9 @@ export function Transfers({route, navigation}: {route: any, navigation: any}): R
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        transfer.push(data.transfer);
-        settlementDate = transfer[1].expected_settlement_date;
+        transfer.time = data.transfer.created;
+        transfer.destination_transfer_id = data.transfer.id
+        settlementDate = data.transfer.expected_settlement_date;
       })
       .catch(err => {
         console.log(err);
@@ -98,7 +110,7 @@ export function Transfers({route, navigation}: {route: any, navigation: any}): R
     let dropdownItems: { label: string; value: string | null; labelStyle: {}}[] = []
     accounts.forEach((account: any) => {
       let balance = account.type === "credit" ? account.balances['current'] : account.balances['available']
-      dropdownItems.push({label: account.name, value: (account.access_token + "?cross?" + account.account_id + "?cross?" + balance) as string | null, labelStyle: styles.labelText})
+      dropdownItems.push({label: account.name, value: (account.access_token + "?cross?" + account.account_id + "?cross?" + balance + "?cross?" + account.name) as string | null, labelStyle: styles.labelText})
     })
     setItems(dropdownItems);
     setDestItems(dropdownItems);
@@ -165,43 +177,48 @@ export function Transfers({route, navigation}: {route: any, navigation: any}): R
   const styles = StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: '#fff', // Set a background color
+      paddingVertical: 20,
+      paddingHorizontal: 15,
     },
     mainButton: {
       width: 200,
-      textAlign: 'center',
+      alignSelf: 'center',
+      marginTop: 20,
       backgroundColor: COLORS.primary,
     },
-    dropdown: {
+    dropdownContainer: {
+      width: 200,
       alignSelf: 'center',
       marginTop: 10,
-      width: 200,
+    },
+    dropdown: {
+      marginTop: 10,
+      width: 200, // Set the width to match dropdown
+      alignSelf: 'center',
     },
     destDropdown: {
-      alignSelf: 'center',
       marginTop: 10,
-      marginBottom: 60,
-      width: 200,
+      width: 200, // Set the width to match dropdown
+      alignSelf: 'center',
     },
     content: {
       flex: 1,
-      alignItems: 'center'
+      alignItems: 'center',
     },
     subtitle: {
-      fontSize: 20,
+      fontSize: 18,
       marginTop: 20,
-      padding: 10,
-    },
-    labelText: {
-      fontSize: 14,
-      padding: 10,
-      color: 'black',
+      marginBottom: 10,
+      alignSelf: 'center',
     },
     input: {
-      height: 60,
-      margin: 12,
+      height: 40,
+      marginVertical: 5,
       width: 200,
       fontSize: 14,
       borderWidth: 1,
+      borderRadius: 5,
       padding: 10,
     },
-});
+  });
