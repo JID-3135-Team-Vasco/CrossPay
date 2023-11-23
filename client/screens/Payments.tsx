@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {SafeAreaView, StyleSheet, TextInput, Text, View, Alert, Platform} from 'react-native';
+import {SafeAreaView, StyleSheet, TextInput, Text, View, Alert, Platform, Modal, TouchableOpacity} from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import FooterList from '../components/FooterList';
 import {COLORS} from './Colors';
@@ -14,6 +14,8 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [typeOpen, setTypeOpen] = useState(false);
+  const [optionOpen, setOptionOpen] = useState(false);
+  const [paymentOption, setPaymentOption] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState('');
   const [routingNumber, setRoutingNumber] = useState('');
   const [accountTypes, setAccountTypes] = useState([
@@ -24,6 +26,23 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
   const [items, setItems] = useState([{label: '', value: null as string | null, labelStyle: {}}]);
   const [amount, setAmount] = useState(0.00 as number | null);
   const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
+  const [options, setOptions] = useState([
+    {label: 'Existing Payment Profile', value: 'profile', labelStyle: styles.labelText}, 
+    {label: 'Enter Account Information', value: 'accountInfo', labelStyle: styles.labelText}
+  ]);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const handleOptionSelect = (value: string) => {
+    setPaymentOption(value);
+    console.log(value);
+    console.log(paymentOption)
+    if (paymentOption === 'accountInfo') {
+      toggleModal();
+    }
+  };
 
   
   const onPressConfirm = async () => {
@@ -164,19 +183,21 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
-          <Text style={styles.subtitle}>Source Account: </Text>
-          <DropDownPicker
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-            theme="LIGHT"
-            placeholder="Select an account"
-            style={styles.dropdown}
-          />
-          <Text style={styles.subtitle}>Amount: </Text>
+        <Text style={styles.subtitle}>Source Account: </Text>
+
+
+        <DropDownPicker
+          open={open}
+          value={value}
+          items={items}
+          setOpen={setOpen}
+          setValue={setValue}
+          setItems={setItems}
+          theme="LIGHT"
+          placeholder="Select an account"
+          style={styles.dropdown}
+        />
+        <Text style={styles.subtitle}>Amount: </Text>
           <CurrencyInput
             value={amount}
             onChangeValue={setAmount}
@@ -188,32 +209,71 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
             minValue={0}
             placeholder='$10.00'
           />
-          <Text style={styles.subtitle}>Destination Account: </Text>
-          <Input
-            placeholder="Account Number"
-            onChangeText={setAccountNumber}
-            autoCapitalize="none"
-          />
-          <Input
-            placeholder="Routing Number"
-            onChangeText={setRoutingNumber}
-          />
-          <DropDownPicker
-            open={typeOpen}
-            value={accountType}
-            items={accountTypes}
-            setOpen={setTypeOpen}
-            setValue={setAccountType}
-            setItems={setAccountTypes}
+        <Text style={styles.subtitle}>Destination Account: </Text>
+        <DropDownPicker
+            open={optionOpen}
+            value={paymentOption}
+            items={options}
+            setOpen={setOptionOpen}
+            setValue={(value) => handleOptionSelect(value)}
+            setItems={setOptions}
             theme="LIGHT"
-            placeholder="Account Type"
-            style={styles.destDropdown}
+            placeholder="Payment Destination:"
+            style={styles.dropdown}
           />
-          <Button
-            title="Pay"
-            onPress={onPressConfirm}
-            buttonStyle={styles.mainButton}
-          />
+          
+          {paymentOption==="accountInfo" ?
+          <Modal
+            animationType="slide"
+            presentationStyle="pageSheet"
+            transparent={false}
+            visible={isModalVisible}
+            onRequestClose={toggleModal}
+          >
+            <View>
+
+            <Text style={styles.subtitle}>Account Information: </Text>           
+            <Input
+              placeholder="Account Number"
+              onChangeText={setAccountNumber}
+              autoCapitalize="none"
+            />
+            <Input
+              placeholder="Routing Number"
+              onChangeText={setRoutingNumber}
+            />
+            <DropDownPicker
+              open={typeOpen}
+              value={accountType}
+              items={accountTypes}
+              setOpen={setTypeOpen}
+              setValue={setAccountType}
+              setItems={setAccountTypes}
+              theme="LIGHT"
+              placeholder="Account Type"
+              style={styles.destDropdown}
+            />
+            <Button 
+              title="Save Payment Profile"
+              buttonStyle={styles.mainButton}
+            />             
+            <Button
+              title="Pay"
+              onPress={onPressConfirm}
+              buttonStyle={styles.mainButton}
+            />             
+            <Button 
+              title="Close"
+              onPress={toggleModal}
+              buttonStyle={styles.closeButton}
+            />
+              
+            
+            </View>
+          </Modal>
+          : null}
+
+
         </View>
         <FooterList email={email} accounts={accounts}/>
       </SafeAreaView>
@@ -232,6 +292,12 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
     alignSelf: 'center',
     marginTop: 20,
     backgroundColor: COLORS.primary,
+  },
+  closeButton: {
+    width: 200,
+    alignSelf: 'center',
+    marginTop: 100,
+    backgroundColor: COLORS.red,
   },
   dropdownContainer: {
     width: 200,
@@ -265,5 +331,6 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
+    alignSelf: 'center'
   },
 });
