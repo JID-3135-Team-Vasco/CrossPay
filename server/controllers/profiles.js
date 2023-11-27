@@ -27,19 +27,19 @@ export const getPaymentProfiles = async (req, res) => {
         if (!user) {
             return res.json({ error: "Email or reset code is invalid" });
         }
-        newPofile = {
+        newProfile = {
             access_token: access_token,
             account_id: account_id,
         }
 
         profiles = user.payment_profiles;
         if (profiles) {
-            profiles.push(newPofile);
+            profiles.push(newProfile);
             user.payment_profiles = profiles;
             user.save();
         } else {
             profiles = [];
-            profiles.push(newPofile);
+            profiles.push(newProfile);
             user.payment_profiles = profiles;
             user.save()
         }
@@ -66,3 +66,35 @@ export const getPaymentProfiles = async (req, res) => {
       console.log(err);
     }
   };
+
+  export const deletePaymentProfile = async (req, res) => {
+    try {
+        const { email, access_token, account_id } = req.body;
+        console.log(email);
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.json({ error: "Email or reset code is invalid" });
+        }
+        targetProfile = {
+            access_token: access_token,
+            account_id: account_id,
+        }
+
+        profiles = user.payment_profiles;
+        if (profiles) {
+            for (var i = 0; i < profiles.length; i++){
+                if (profiles[i].access_token == targetProfile.access_token 
+                    && profiles[i].account_id == targetProfile.account_id) {
+                        profiles.splice(i, 1);
+                    }
+            }
+            user.payment_profiles = profiles;
+            user.save();
+        } else {
+            return res.json({ error: "No payment profiles found." });
+        }
+        return res.json({ ok: true });
+    } catch (err) {
+        console.log(err);
+    }
+};
