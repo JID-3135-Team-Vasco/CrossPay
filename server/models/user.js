@@ -35,6 +35,10 @@ const userSchema = new Schema(
     access_token: {
       type: String,
     },
+    payment_profiles: {
+      type: Array,
+      required: false,
+    }
   },
   { timestamps: true }
 );
