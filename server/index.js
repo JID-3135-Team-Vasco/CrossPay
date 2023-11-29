@@ -10,6 +10,7 @@ import plaidRoutes from "./routes/plaid";
 import accountRoutes from "./routes/accounts";
 import transferRoutes from "./routes/transfers";
 import paymentRoutes from "./routes/payments";
+import profileRoutes from "./routes/profiles";
 
 import morgan from "morgan";
 
@@ -41,5 +42,6 @@ app.use("/api", plaidRoutes);
 app.use("/accounts", accountRoutes);
 app.use("/transfers", transferRoutes);
 app.use("/payments", paymentRoutes);
+app.use("/payment-profiles", profileRoutes);
 
 app.listen(8000, () => console.log("Server running on port 8000"));

@@ -6,6 +6,7 @@ import {COLORS} from './Colors';
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
 import CurrencyInput from 'react-native-currency-input';
+import Dialog from "react-native-dialog";
 
 export function Payments({route, navigation}: {route: any, navigation: any}): React.ReactElement {
 
@@ -13,33 +14,71 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
   const [linkToken, setLinkToken] = useState(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+
+  const [profileName, setProfileName] = useState('');
+  const [profileAccountNumber, setProfileAccountNumber] = useState('');
+  const [profileRoutingNumber, setProfileRoutingNumber] = useState('');
+  const [profileAccountType, setProfileAccountType] = useState('');
+
   const [typeOpen, setTypeOpen] = useState(false);
   const [optionOpen, setOptionOpen] = useState(false);
-  const [paymentOption, setPaymentOption] = useState<string | null>(null);
+  const [paymentOption, setPaymentOption] = useState(null);
   const [accountNumber, setAccountNumber] = useState('');
   const [routingNumber, setRoutingNumber] = useState('');
   const [accountTypes, setAccountTypes] = useState([
     {label: 'Checking', value: 'checking', labelStyle: styles.labelText}, 
     {label: 'Savings', value: 'savings', labelStyle: styles.labelText}
   ]);
-  const [accountType, setAccountType] = useState(null);
+  const [accessToken, setAccessToken] = useState('');
+  const [accountID, setAccountID] = useState('');
+  const [accountType, setAccountType] = useState('checking');
+  const [isInfoDisabled, setInfoDisabled] = useState(false);
   const [items, setItems] = useState([{label: '', value: null as string | null, labelStyle: {}}]);
   const [amount, setAmount] = useState(0.00 as number | null);
   const address = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
   const [options, setOptions] = useState([
-    {label: 'Existing Payment Profile', value: 'profile', labelStyle: styles.labelText}, 
-    {label: 'Enter Account Information', value: 'accountInfo', labelStyle: styles.labelText}
+    {label: 'Enter Account Information Manually...', value: '!ManualEnter!', labelStyle: styles.labelText}
   ]);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isDialogVisible, setDialogVisible] = useState(false);
+  const [isEditDialogVisible, setEditDialogVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const handleOptionSelect = (value: string) => {
-    setPaymentOption(value);
-    console.log(value);
-    console.log(paymentOption)
-    if (paymentOption === 'accountInfo') {
+  const proceedWithPayment = () => {
+    if (!value) {
+      Alert.alert('Please choose a valid source account!');
+      return;
+    }
+    if (!amount || amount <= 0) {
+      Alert.alert('Please enter a nonzero amount!');
+      return;
+    }
+    if (!paymentOption) {
+      Alert.alert('Please choose a valid destination account!');
+      return;
+    }
+    if (paymentOption === '!ManualEnter!') {
+      setAccessToken('');
+      setAccountID('');
+      setAccountNumber('');
+      setRoutingNumber('');
+      setAccountType('checking');
+      setInfoDisabled(false);
+      toggleModal();
+    } else {
+      let paymentProfileInfo = paymentOption?.split('?cross?');
+      if (paymentProfileInfo.length != 7) {
+        Alert.alert('Unexpected error!');
+        return;
+      }
+      setAccessToken(paymentProfileInfo[0]);
+      setAccountID(paymentProfileInfo[1]);
+      setAccountNumber(paymentProfileInfo[3]);
+      setRoutingNumber(paymentProfileInfo[4]);
+      setAccountType(paymentProfileInfo[5]);
+      setInfoDisabled(true);
       toggleModal();
     }
   };
@@ -79,8 +118,8 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       time: '',
       dest_account_number: accountNumber,
       dest_routing_number: routingNumber,
-      dest_account_id: '',
-      dest_access_token: '',
+      dest_account_id: accountID,
+      dest_access_token: accessToken,
       ledger_transfer_id: '',
       destination_transfer_id: ''
     };
@@ -89,8 +128,8 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       Alert.alert('You only have $' + balance + ' in this account!');
       return;
     }
-
-    await fetch(`http://${address}:8000/api/payment/authorize`, {
+    if (accountID === '' || accessToken === '') {
+      await fetch(`http://${address}:8000/api/payment/authorize`, {
       method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,8 +156,10 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
         console.log(err);
         return;
       });
+    }
     
     if (!payment.dest_access_token || payment.dest_access_token.length == 0 || !payment.dest_account_id || payment.dest_account_id.length == 0) {
+      Alert.alert('Unexpected error!');
       return;
     }
 
@@ -163,6 +204,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       email: email, 
       payment: payment,
     }) 
+    toggleModal();
     Alert.alert('Your payment is successful!\nIt should be settled by ' + new Date(settlementDate).toLocaleDateString());
     navigation.push('Accounts', {email});
   };
@@ -176,8 +218,219 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
     setItems(dropdownItems);
   }
 
+  const getPaymentProfiles = async () => {
+    console.log("getting payment profiles");
+    let updatedOptions = [];
+    let userProfiles: any[] = [];
+    await axios
+    .get(`http://${address}:8000/payment-profiles/get-payment-profiles`, {
+        params: { email: email },
+    })
+    .then(function (response) {
+        userProfiles = response.data.payment_profiles;
+        console.log(userProfiles);
+    })
+    if (userProfiles != null && userProfiles.length > 0) {
+      console.log("here");
+        userProfiles.forEach((userProfile: any) => {
+          updatedOptions.push(
+            {
+              label: userProfile.name, 
+              value: (userProfile.access_token + "?cross?" + userProfile.account_id + "?cross?" + userProfile.name + "?cross?" 
+                + userProfile.account_number + "?cross?" + userProfile.routing_number + "?cross?" + userProfile.type
+                + "?cross?" + userProfile._id) as string | null, 
+              labelStyle: styles.labelText
+            }
+          );
+        })
+    }
+    updatedOptions.push({label: 'Enter Account Information Manually', value: '!ManualEnter!', labelStyle: styles.labelText});
+    setOptions(updatedOptions);
+  }
+
+  const showDialog = () => {
+    setProfileName('');
+    setProfileAccountNumber('');
+    setProfileRoutingNumber('');
+    setProfileAccountType('');
+    setDialogVisible(true);
+  };
+  const showEditDialog = () => {
+    if (!paymentOption || paymentOption === '!ManualEnter!') {
+      Alert.alert('Please choose a valid payment profile!');
+      return;
+    }
+    
+    let paymentProfileInfo = paymentOption?.split('?cross?');
+    if (paymentProfileInfo.length != 7) {
+      Alert.alert('Unexpected error!');
+      return;
+    }
+    setProfileName(paymentProfileInfo[2]);
+    setProfileAccountNumber(paymentProfileInfo[3]);
+    setProfileRoutingNumber(paymentProfileInfo[4]);
+    setProfileAccountType(paymentProfileInfo[5].substring(0, 1).toUpperCase() + paymentProfileInfo[5].substring(1));
+    setEditDialogVisible(true);
+  };
+
+  const handleCancel = () => {
+    setDialogVisible(false);
+  };
+
+  const deletePaymentProfile = async () => {
+    const profile_id = paymentOption?.split('?cross?')[6];
+    const resp = await axios.post(`http://${address}:8000/payment-profiles/delete-payment-profile`, {
+        email: email,
+        profile_id: profile_id,
+    });
+    if (resp.data.error) {
+      Alert.alert(resp.data.error);
+    } else {
+      await getPaymentProfiles();
+      setEditDialogVisible(false);
+      navigation.push('Payments', {email, accounts});
+      Alert.alert('Payment profile successfully deleted!');
+    }
+  };
+
+  const updatePaymentProfile = async () => {
+
+    const profile_id = paymentOption?.split('?cross?')[6];
+    
+    if (profileAccountType.toLowerCase() !== 'checking' && profileAccountType.toLowerCase() !== 'saving') {
+      Alert.alert('Please enter a valid account type!');
+      return;
+    }
+    if (!profileAccountNumber || profileAccountNumber.length < 4 || profileAccountNumber.length > 17) {
+      Alert.alert('Please enter a valid account number of 4-17 numbers!');
+      return;
+    }
+    if (!profileRoutingNumber || profileRoutingNumber.length != 9) {
+      Alert.alert('Please enter a valid routing number of 9 numbers!');
+      return;
+    }
+
+    let profile_access_token = '';
+    let profile_account_id = '';
+
+    await fetch(`http://${address}:8000/api/payment/authorize`, {
+      method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({account_number: profileAccountNumber, routing_number: profileRoutingNumber, account_type: profileAccountType.toLowerCase()}),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.error && data.error.indexOf("account_number") != -1) {
+          Alert.alert('Please enter a valid account number of 4-17 numbers!');
+          return;
+        } else if (data.error && data.error.indexOf("routing_number") != -1) {
+          Alert.alert('Please enter a valid routing number of 9 numbers!');
+          return;
+        } else if (data.error) {
+          Alert.alert(data.error);
+          return;
+        }
+        profile_access_token = data.access_token;
+        profile_account_id = data.account_id;
+      })
+      .catch(err => {
+        console.log(err);
+        return;
+      });
+    
+    const resp = await axios.post(`http://${address}:8000/payment-profiles/update-payment-profile`, {
+        email: email, 
+        name: profileName,
+        account_number: profileAccountNumber,
+        routing_number: profileRoutingNumber,
+        type: profileAccountType.toLowerCase(),
+        access_token: profile_access_token,
+        account_id: profile_account_id,
+        existing_id: profile_id,
+    });
+    if (resp.data.error) {
+      Alert.alert(resp.data.error);
+    } else {
+      await getPaymentProfiles();
+      setEditDialogVisible(false);
+      navigation.push('Payments', {email, accounts});
+      Alert.alert('Payment profile successfully updated!');
+    }
+
+  }
+
+  const addPaymentProfile = async () => {
+    
+    if (profileAccountType.toLowerCase() !== 'checking' && profileAccountType.toLowerCase() !== 'saving') {
+      Alert.alert('Please enter a valid account type!');
+      return;
+    }
+    if (!profileAccountNumber || profileAccountNumber.length < 4 || profileAccountNumber.length > 17) {
+      Alert.alert('Please enter a valid account number of 4-17 numbers!');
+      return;
+    }
+    if (!profileRoutingNumber || profileRoutingNumber.length != 9) {
+      Alert.alert('Please enter a valid routing number of 9 numbers!');
+      return;
+    }
+
+    let profile_access_token = '';
+    let profile_account_id = '';
+
+    await fetch(`http://${address}:8000/api/payment/authorize`, {
+      method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({account_number: profileAccountNumber, routing_number: profileRoutingNumber, account_type: profileAccountType.toLowerCase()}),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.error && data.error.indexOf("account_number") != -1) {
+          Alert.alert('Please enter a valid account number of 4-17 numbers!');
+          return;
+        } else if (data.error && data.error.indexOf("routing_number") != -1) {
+          Alert.alert('Please enter a valid routing number of 9 numbers!');
+          return;
+        } else if (data.error) {
+          Alert.alert(data.error);
+          return;
+        }
+        profile_access_token = data.access_token;
+        profile_account_id = data.account_id;
+      })
+      .catch(err => {
+        console.log(err);
+        return;
+      });
+    
+    const resp = await axios.post(`http://${address}:8000/payment-profiles/add-payment-profile`, {
+        email: email, 
+        name: profileName,
+        account_number: profileAccountNumber,
+        routing_number: profileRoutingNumber,
+        type: profileAccountType.toLowerCase(),
+        access_token: profile_access_token,
+        account_id: profile_account_id,
+    });
+    if (resp.data.error) {
+      Alert.alert(resp.data.error);
+    } else {
+      await getPaymentProfiles();
+      setDialogVisible(false);
+      navigation.push('Payments', {email, accounts});
+      Alert.alert('Payment profile successfully added!');
+    }
+
+  }
+  
   useEffect(() => {
     getAccounts();
+    getPaymentProfiles();
   },[])
   
     return (
@@ -215,36 +468,69 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
             value={paymentOption}
             items={options}
             setOpen={setOptionOpen}
-            setValue={(value) => handleOptionSelect(value)}
+            setValue={setPaymentOption}
             setItems={setOptions}
             theme="LIGHT"
-            placeholder="Payment Destination:"
+            placeholder="Select an account"
             style={styles.dropdown}
           />
-          
-          {paymentOption==="accountInfo" ?
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttons} onPress={showDialog}>
+            <Text style={styles.buttonText}>Add Payment Profile</Text>
+            <Dialog.Container visible={isDialogVisible}>
+              <Dialog.Title>Add Payment Profile</Dialog.Title>
+              <Dialog.Input value={profileName} placeholder='Profile Name' onChangeText={setProfileName}></Dialog.Input>
+              <Dialog.Input value={profileAccountNumber} placeholder='Account Number' onChangeText={setProfileAccountNumber}></Dialog.Input>
+              <Dialog.Input value={profileRoutingNumber} placeholder='Routing Number' onChangeText={setProfileRoutingNumber}></Dialog.Input>
+              <Dialog.Input value={profileAccountType} placeholder='Account Type (Checking/Saving)' onChangeText={setProfileAccountType}></Dialog.Input>
+              <Dialog.Button label="Cancel" onPress={handleCancel} />
+              <Dialog.Button label="Confirm" onPress={addPaymentProfile} />
+            </Dialog.Container>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.editButton} onPress={showEditDialog}>
+            <Text style={styles.buttonText}>Edit Payment Profile</Text>
+            <Dialog.Container visible={isEditDialogVisible}>
+              <Dialog.Title>Edit Payment Profile</Dialog.Title>
+              <Dialog.Input value={profileName} placeholder='Profile Name' onChangeText={setProfileName}></Dialog.Input>
+              <Dialog.Input value={profileAccountNumber} placeholder='Account Number' onChangeText={setProfileAccountNumber}></Dialog.Input>
+              <Dialog.Input value={profileRoutingNumber} placeholder='Routing Number' onChangeText={setProfileRoutingNumber}></Dialog.Input>
+              <Dialog.Input value={profileAccountType} placeholder='Account Type (Checking/Saving)' onChangeText={setProfileAccountType}></Dialog.Input>
+              <Dialog.Button label="Delete Profile" onPress={deletePaymentProfile} />
+              <Dialog.Button label="Update Profile" onPress={updatePaymentProfile} />
+            </Dialog.Container>
+          </TouchableOpacity>
+        </View>
+        
+        <TouchableOpacity style={styles.buttons} onPress={proceedWithPayment}>
+          <Text style={styles.buttonText}>Proceed with Payment</Text>
+        </TouchableOpacity>
           <Modal
             animationType="slide"
-            presentationStyle="pageSheet"
+            presentationStyle="formSheet"
             transparent={false}
             visible={isModalVisible}
             onRequestClose={toggleModal}
           >
             <View>
 
-            <Text style={styles.subtitle}>Account Information: </Text>           
+            <Text style={styles.subtitle}>Destination Account Information: </Text>           
             <Input
               placeholder="Account Number"
+              disabled={isInfoDisabled}
+              value={accountNumber}
               onChangeText={setAccountNumber}
               autoCapitalize="none"
             />
             <Input
               placeholder="Routing Number"
+              disabled={isInfoDisabled}
+              value={routingNumber}
               onChangeText={setRoutingNumber}
             />
             <DropDownPicker
               open={typeOpen}
               value={accountType}
+              disabled={isInfoDisabled}
               items={accountTypes}
               setOpen={setTypeOpen}
               setValue={setAccountType}
@@ -253,25 +539,20 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
               placeholder="Account Type"
               style={styles.destDropdown}
             />
-            <Button 
-              title="Save Payment Profile"
-              buttonStyle={styles.mainButton}
-            />             
-            <Button
-              title="Pay"
-              onPress={onPressConfirm}
-              buttonStyle={styles.mainButton}
-            />             
-            <Button 
-              title="Close"
-              onPress={toggleModal}
-              buttonStyle={styles.closeButton}
-            />
-              
-            
+            <View style={styles.buttonContainer}> 
+              <Button
+                title="Pay"
+                onPress={onPressConfirm}
+                buttonStyle={styles.mainButton}
+              />             
+              <Button 
+                title="Close"
+                onPress={toggleModal}
+                buttonStyle={styles.closeButton}
+              />
+            </View> 
             </View>
           </Modal>
-          : null}
 
 
         </View>
@@ -283,20 +564,15 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
   const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff', // Set a background color
-    paddingVertical: 20,
-    paddingHorizontal: 15,
   },
   mainButton: {
-    width: 200,
+    width: 150,
     alignSelf: 'center',
-    marginTop: 20,
     backgroundColor: COLORS.primary,
   },
   closeButton: {
-    width: 200,
+    width: 150,
     alignSelf: 'center',
-    marginTop: 100,
     backgroundColor: COLORS.red,
   },
   dropdownContainer: {
@@ -309,19 +585,38 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
   },
   destDropdown: {
     marginTop: 10,
-    marginBottom: 20,
     width: 200,
     alignSelf: 'center',
   },
+  buttons: {
+    backgroundColor: COLORS.primary,
+    padding: 10,
+    borderRadius: 30, 
+    marginRight: 15,
+    marginLeft: 15,
+  },
   content: {
     flex: 1,
-    alignItems: 'center',
+  },
+  editButton: {
+    backgroundColor: COLORS.red,
+    padding: 10,
+    borderRadius: 30,
+    marginRight: 15,
   },
   subtitle: {
     fontSize: 18,
-    marginTop: 20,
+    marginTop: 50,
     marginBottom: 10,
     alignSelf: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    elevation: 4,
+    marginTop: 30,
+    alignItems: 'center', 
+    marginBottom: 20, 
   },
   input: {
     height: 40,
@@ -332,5 +627,11 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
     borderRadius: 5,
     padding: 10,
     alignSelf: 'center'
+  },
+  buttonText: {
+    fontSize: 15,
+    color: '#FFF',
+    fontWeight: 'bold',
+    alignSelf: 'center',
   },
 });
