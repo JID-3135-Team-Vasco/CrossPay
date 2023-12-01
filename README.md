@@ -66,7 +66,7 @@ Both commands start Metro, build the app, open a simulator/emulator, and launch 
 
 ## Troubleshooting
 
-**You are unable to run my Metro application.**
+**You are unable to run the Metro application.**
 
 If on iOS, delete the Pods folder and Podfile.lock and rerun `pod install`. If on Android, clean your gradle.
 
