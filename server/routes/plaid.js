@@ -143,7 +143,6 @@ router.post("/transfer/ledger", async (req, res, next) => {
   let transferAuthorizationCreatePayload = {
     access_token: access_token,
     account_id: account_id,
-    funding_account_id: process.env.PLAID_FUNDING_ACCOUNT,
     type: "debit",
     network: "ach",
     amount: amount,
@@ -209,7 +208,6 @@ router.post("/transfer/destination", async (req, res, next) => {
   let transferAuthorizationCreatePayload = {
     access_token: access_token,
     account_id: account_id,
-    funding_account_id: process.env.PLAID_FUNDING_ACCOUNT,
     type: "credit",
     network: "ach",
     amount: amount,
@@ -230,12 +228,16 @@ router.post("/transfer/destination", async (req, res, next) => {
     });
   }
 
+  console.log(transferAuthorizationCreateResponse);
+
   if (
     transferAuthorizationCreateResponse.data.authorization.decision ===
     "declined"
   ) {
     return res.json({
-      error: transferAuthorizationCreateResponse.decision_rationale.description,
+      error:
+        transferAuthorizationCreateResponse.data.authorization
+          .decision_rationale.description,
     });
   }
   const authorization_id =

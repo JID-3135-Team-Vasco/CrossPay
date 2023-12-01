@@ -38,6 +38,7 @@ export const updatePayments = async (req, res) => {
     } else {
       userPayments.push(payment);
     }
+    console.log(userPayments);
     user.payments = userPayments;
     user.save();
 
