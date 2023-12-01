@@ -1,8 +1,10 @@
 # CrossPay
 
+## Install Guide
+
 CrossPay is a payment application that is designed to consolidate bank account, credit card, and payment information all in one app. Through React Native, both iOS and Android devices are supported, and utilizing the Plaid API allows for transactions to occur. CrossPay simplifies payments into one, easy to access app.
 
-# Mobile development environment
+## Mobile development environment
 
 You'll need to set up a mobile development environment to run the app on iOS or Android. The steps and features depend on if you have a MacOS or Windows.
 A MacOS is ideal for development since it allows for both iOS and Android testing, however Windows is ideal for Android development.
@@ -12,7 +14,7 @@ You'll specifically need to follow the instructions under "React Native CLI Quic
 
 For Android ensure enviroment variables and Android SDK is setup properly.
 
-## Setup
+## Initial Setup
 
 Install dependencies:  
 Ensure your Node version is 16.20.1. Next, run `npm install` in the client folder.
@@ -59,12 +61,30 @@ To run on Android, run this command:
 npx react-native run-android
 ```
 
-#
-
 Both commands start Metro, build the app, open a simulator/emulator, and launch the app in the simulator/emulator. For iOS, if you encounter an error related to a simulator not being found, you can specify a simulator like so:
 `npx react-native run-ios --simulator="iPhone 14"`
 
 # Release Notes
+
+## Version 1.0.0
+
+### Features
+
+- Completed functionality to add, edit, and delete payment profiles
+- Enabled paying with and without payment profiles with Plaid ledger enabled
+- Included list of payments and transfers in profile page
+- Added email notifications for when payments and transfers are successfuly initiated and for when accounts are created
+
+### Bug Fixes
+
+- Fixed payment errors when Plaid ledger is enabled
+- Fixed bug where past payments and transfers were not stored in the database appropriately
+- Fixed Android Plaid Link issues for Windows machines
+
+### Known Issues
+
+- Async storage is not setup, so user state is not remembered upon closing the app
+
 
 ## Version 0.4.0
 
