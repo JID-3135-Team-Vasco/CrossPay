@@ -64,6 +64,24 @@ npx react-native run-android
 Both commands start Metro, build the app, open a simulator/emulator, and launch the app in the simulator/emulator. For iOS, if you encounter an error related to a simulator not being found, you can specify a simulator like so:
 `npx react-native run-ios --simulator="iPhone 14"`
 
+## Solutions to Potential Issues
+
+### I am unable to run my Metro application
+
+If on iOS, delete the Pods folder and Podfile.lock and rerun `pod install`. If on Android, clean your gradle.
+
+### My Plaid Link SDK is not compatible with my OS
+
+Refer to the [Plaid Link SDK documentation](https://plaid.com/docs/link/react-native/) for the version you would require. Then accordingly modify the `package.json` file.
+
+### The backend does not connect to the database
+
+Make sure your `/backend/.env` file is correctly setup with the username and password of the MongoDB database in the `DATABASE=` string.
+
+### The backend does not connect to the Plaid server
+
+Make sure your `/backend/.env` file is correctly setup with the client ID and secret of the Plaid account in the `PLAID_CLIENT_ID=<client-id>` and `PLAID_SECRET=<sandbox-secret>=` strings.
+
 # Release Notes
 
 ## Version 1.0.0
