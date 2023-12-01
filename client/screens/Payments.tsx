@@ -163,6 +163,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       return;
     }
 
+    let settlementDate = "";
     await fetch(`http://${address}:8000/api/transfer/ledger`, {
       method: 'POST',
         headers: {
@@ -173,14 +174,20 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        payment.ledger_transfer_id = data.transfer.id;;
+        if (data.error) {
+          Alert.alert(data.error);
+          return;
+        }
+        payment.time = data.transfer.created;
+        payment.ledger_transfer_id = data.transfer.id;
+        settlementDate = data.transfer.expected_settlement_date;
       })
       .catch(err => {
         console.log(err);
         Alert.alert('There was an error with your transfer!');
+        return;
       });
     
-    let settlementDate = "";
     await fetch(`http://${address}:8000/api/transfer/destination`, {
       method: 'POST',
         headers: {
@@ -191,15 +198,20 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        payment.time = data.transfer.created;
-        payment.destination_transfer_id = data.transfer.id
-        settlementDate = data.transfer.expected_settlement_date;
+        if (data.error) {
+          payment.destination_transfer_id = payment.ledger_transfer_id;
+        } else {
+          payment.time = data.transfer.created;
+          payment.destination_transfer_id = data.transfer.id;
+          settlementDate = data.transfer.expected_settlement_date;
+        }
       })
       .catch(err => {
         console.log(err);
         Alert.alert('There was an error with your transfer!');
+        return;
       });
-    
+    console.log(payment);
     await axios.post(`http://${address}:8000/payments/update-payments`, {
       email: email, 
       payment: payment,
@@ -297,7 +309,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
 
     const profile_id = paymentOption?.split('?cross?')[6];
     
-    if (profileAccountType.toLowerCase() !== 'checking' && profileAccountType.toLowerCase() !== 'saving') {
+    if (profileAccountType.toLowerCase() !== 'checking' && profileAccountType.toLowerCase() !== 'savings') {
       Alert.alert('Please enter a valid account type!');
       return;
     }
@@ -364,8 +376,8 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
 
   const addPaymentProfile = async () => {
     
-    if (profileAccountType.toLowerCase() !== 'checking' && profileAccountType.toLowerCase() !== 'saving') {
-      Alert.alert('Please enter a valid account type!');
+    if (profileAccountType.toLowerCase() !== 'checking' && profileAccountType.toLowerCase() !== 'savings') {
+      Alert.alert('Please enter a valid account type: checking or savings!');
       return;
     }
     if (!profileAccountNumber || profileAccountNumber.length < 4 || profileAccountNumber.length > 17) {
@@ -482,7 +494,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
               <Dialog.Input value={profileName} placeholder='Profile Name' onChangeText={setProfileName}></Dialog.Input>
               <Dialog.Input value={profileAccountNumber} placeholder='Account Number' onChangeText={setProfileAccountNumber}></Dialog.Input>
               <Dialog.Input value={profileRoutingNumber} placeholder='Routing Number' onChangeText={setProfileRoutingNumber}></Dialog.Input>
-              <Dialog.Input value={profileAccountType} placeholder='Account Type (Checking/Saving)' onChangeText={setProfileAccountType}></Dialog.Input>
+              <Dialog.Input value={profileAccountType} placeholder='Account Type' onChangeText={setProfileAccountType}></Dialog.Input>
               <Dialog.Button label="Cancel" onPress={handleCancel} />
               <Dialog.Button label="Confirm" onPress={addPaymentProfile} />
             </Dialog.Container>
@@ -494,7 +506,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
               <Dialog.Input value={profileName} placeholder='Profile Name' onChangeText={setProfileName}></Dialog.Input>
               <Dialog.Input value={profileAccountNumber} placeholder='Account Number' onChangeText={setProfileAccountNumber}></Dialog.Input>
               <Dialog.Input value={profileRoutingNumber} placeholder='Routing Number' onChangeText={setProfileRoutingNumber}></Dialog.Input>
-              <Dialog.Input value={profileAccountType} placeholder='Account Type (Checking/Saving)' onChangeText={setProfileAccountType}></Dialog.Input>
+              <Dialog.Input value={profileAccountType} placeholder='Account Type' onChangeText={setProfileAccountType}></Dialog.Input>
               <Dialog.Button label="Delete Profile" onPress={deletePaymentProfile} />
               <Dialog.Button label="Update Profile" onPress={updatePaymentProfile} />
             </Dialog.Container>
