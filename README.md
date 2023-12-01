@@ -1,6 +1,6 @@
 # CrossPay
 
-## Install Guide
+# Install Guide
 
 CrossPay is a payment application that is designed to consolidate bank account, credit card, and payment information all in one app. Through React Native, both iOS and Android devices are supported, and utilizing the Plaid API allows for transactions to occur. CrossPay simplifies payments into one, easy to access app.
 
