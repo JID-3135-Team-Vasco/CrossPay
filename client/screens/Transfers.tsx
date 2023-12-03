@@ -102,7 +102,7 @@ export function Transfers({route, navigation}: {route: any, navigation: any}): R
       email: email, 
       transfer: transfer,
     }) 
-    Alert.alert('Your transfer is successful!\nIt should be settled by ' + new Date(settlementDate).toLocaleDateString());
+    Alert.alert('Your transfer is successful!');
     navigation.push('Accounts', {email});
   };
   

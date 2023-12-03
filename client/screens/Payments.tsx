@@ -217,7 +217,7 @@ export function Payments({route, navigation}: {route: any, navigation: any}): Re
       payment: payment,
     }) 
     toggleModal();
-    Alert.alert('Your payment is successful!\nIt should be settled by ' + new Date(settlementDate).toLocaleDateString());
+    Alert.alert('Your payment is successful!');
     navigation.push('Accounts', {email});
   };
   
