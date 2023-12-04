@@ -1,5 +1,11 @@
 # CrossPay
 
+## Built With
+
+- [![React][React.js]][React-url]
+- [![MongoDB][MongoDB]][MongoDB-url]
+- [Plaid]
+
 # Install Guide
 
 CrossPay is a payment application that is designed to consolidate bank account, credit card, and payment information all in one app. Through React Native, both iOS and Android devices are supported, and utilizing the Plaid API allows for transactions to occur. CrossPay simplifies payments into one, easy to access app.
@@ -103,7 +109,6 @@ Make sure your `/backend/.env` file is correctly setup with the client ID and se
 
 - Async storage is not setup, so user state is not remembered upon closing the app
 
-
 ## Version 0.4.0
 
 ### Features
@@ -112,7 +117,7 @@ Make sure your `/backend/.env` file is correctly setup with the client ID and se
 - Created Transfers screen
 - Enabled fully functioning payments from adding Plaid accounts to arbitrary account/routing number via Plaid's Transfer API (within Sandbox environment)
 - Enabled fully functioning transfers between adding Plaid accounts via Plaid's Transfer API (within Sandbox environment)
- 
+
 ### Bug Fixes
 
 - Prevent adding of duplicate accounts
@@ -140,7 +145,7 @@ Make sure your `/backend/.env` file is correctly setup with the client ID and se
 
 ### Known Issues
 
-- Android only works with `plaid-link-sdk` version of `10.6.4` and iOS only works with `8.0.0` 
+- Android only works with `plaid-link-sdk` version of `10.6.4` and iOS only works with `8.0.0`
 - Plaid SDK is still not supported on certain Windows/Android setups
 - Duplicate accounts can be added
 - Accounts wiped upon initial log in sometimes
@@ -150,7 +155,7 @@ Make sure your `/backend/.env` file is correctly setup with the client ID and se
 ### Features
 
 - Created Account screen and first iteration of footer
-- Integrated [Plaid Link](https://plaid.com/docs/link/) to securely add the following accounts:  
+- Integrated [Plaid Link](https://plaid.com/docs/link/) to securely add the following accounts:
   - Checking
   - Savings
   - Credit Card
@@ -185,3 +190,11 @@ Make sure your `/backend/.env` file is correctly setup with the client ID and se
 
 - MongoDB currently has some issues with accessibility on the backend. This will be looked at in the future.
 - Using axios differs depending on os and is not accounted for. A permanent solution is being looked into.
+
+### Markdown Links
+
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[MongoDB]: https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white
+[MongoDB-url]: https://www.mongodb.com/en-us
+[Plaid]: https://plaid.com/
