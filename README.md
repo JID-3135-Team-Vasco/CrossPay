@@ -112,7 +112,7 @@ Make sure your `/backend/.env` file is correctly setup with the client ID and se
 - Created Transfers screen
 - Enabled fully functioning payments from adding Plaid accounts to arbitrary account/routing number via Plaid's Transfer API (within Sandbox environment)
 - Enabled fully functioning transfers between adding Plaid accounts via Plaid's Transfer API (within Sandbox environment)
-
+ 
 ### Bug Fixes
 
 - Prevent adding of duplicate accounts
