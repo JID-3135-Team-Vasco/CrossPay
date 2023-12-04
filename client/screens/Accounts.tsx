@@ -58,7 +58,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
         newAccounts.forEach((account: any) => {
           finalAccounts.forEach((finalAccount: any) => {
             if (finalAccount.account_id === account.account_id) {
-              console.log("duplicate")
+              console.log("duplicate account")
               console.log(account);
               Alert.alert(account.name + ' is already added to CrossPay');
               duplicate = true;
@@ -73,6 +73,7 @@ export function Accounts({route, navigation}: {route: any, navigation: any}): Re
         });
       })
       .catch(err => {
+        Alert.alert("Could not account. Please try again.");
         console.log(err);
       });
       await axios.post(`http://${address}:8000/accounts/update-accounts`, {
