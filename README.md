@@ -2,7 +2,7 @@
 
 ## Built With
 
-- [![React][React.js]][React-url]
+- [![ReactNative][ReactNative]][React-url]
 - [![MongoDB][MongoDB]][MongoDB-url]
 - [Plaid]
 
@@ -191,10 +191,8 @@ Make sure your `/backend/.env` file is correctly setup with the client ID and se
 - MongoDB currently has some issues with accessibility on the backend. This will be looked at in the future.
 - Using axios differs depending on os and is not accounted for. A permanent solution is being looked into.
 
-### Markdown Links
-
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
+[ReactNative]: https://img.shields.io/badge/react_native-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB
+[React-url]: https://reactnative.dev/
 [MongoDB]: https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white
 [MongoDB-url]: https://www.mongodb.com/en-us
 [Plaid]: https://plaid.com/
