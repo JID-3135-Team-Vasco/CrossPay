@@ -74,7 +74,7 @@ Both commands start Metro, build the app, open a simulator/emulator, and launch 
 - Created Transfers screen
 - Enabled fully functioning payments from adding Plaid accounts to arbitrary account/routing number via Plaid's Transfer API (within Sandbox environment)
 - Enabled fully functioning transfers between adding Plaid accounts via Plaid's Transfer API (within Sandbox environment)
-
+ 
 ### Bug Fixes
 
 - Prevent adding of duplicate accounts
